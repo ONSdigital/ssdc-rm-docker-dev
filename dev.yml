@@ -1,0 +1,62 @@
+version: "3.4"
+services:
+  ons-postgres:
+    container_name: postgres
+    image: postgres:11
+    command: ["-c", "shared_buffers=256MB", "-c", "max_connections=500"]
+    ports:
+      - "${EX_POSTGRES_PORT}:5432"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.8-management
+    ports:
+      - "5369:4369"
+      - "45672:25672"
+      - "${EX_RABBIT_PORT}:5671-5672"
+      - "16671-16672:15671-15672"
+    environment:
+      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/opt/definitions.json
+
+  sftp:
+    container_name: sftp
+    image: atmoz/sftp
+    volumes:
+      - ~/Documents/sftp/ppo_dev/print_services/:/home/centos/ppo_dev/print_services/
+      - ~/Documents/sftp/qmprint_dev/print_services:/home/centos/qmprint_dev/print_services/
+      - ./id_rsa.pub:/home/centos/.ssh/keys/id_rsa.pub:ro
+    ports:
+      - "${EX_SFTP_PORT}:22"
+    command: centos::2000
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - "80:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=ons@ons.gov
+      - PGADMIN_DEFAULT_PASSWORD=secret
+    links:
+      - ons-postgres:postgres
+
+  pubsub-emulator:
+    container_name: pubsub-emulator
+    image: eu.gcr.io/census-rm-ci/rm/gcloud-pubsub-emulator:latest
+    ports:
+      - "8538:8538"
+
+  notifystub:
+    container_name: notifystub
+    image: eu.gcr.io/census-rm-ci/rm/census-rm-notify-stub:latest
+    ports:
+      - "8917:5000"
+
+networks:
+  ssdcrmdockerdev_default:
+    external: true
