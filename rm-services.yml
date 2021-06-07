@@ -64,7 +64,48 @@ services:
       retries: 4
       start_period: 30s
 
+
+  printfilesvc:
+      container_name: printfilesvc
+      image: eu.gcr.io/census-rm-ci/rm/ssdc-rm-print-file-service:latest
+      external_links:
+        - rabbitmq
+        - sftp
+      environment:
+        - RABBIT_QUEUE=Action.Printer
+        - RABBIT_HOST=${RABBIT_HOST}
+        - RABBIT_PORT=${RABBIT_PORT}
+        - RABBIT_USERNAME=guest
+        - RABBIT_PASSWORD=guest
+        - RABBIT_VIRTUALHOST=/
+        - READINESS_FILE_PATH=/tmp/ready
+        - ENVIRONMENT=DEV
+        - SFTP_HOST=sftp
+        - SFTP_PORT=22
+        - SFTP_USERNAME=centos
+        - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
+        - SFTP_PASSPHRASE=secret
+        - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
+        - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+        - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/supplier_config/dummy_supplier_config.json
+        - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
+
+      restart: always
+      healthcheck:
+        test: sh -c "[ -f /tmp/ready ]"
+        interval: 10s
+        timeout: 10s
+        retries: 10
+        start_period: 50s
+      volumes:
+        - ./dummy_keys:/home/printfile/dummy_keys
+        - ./supplier_config:/home/printfile/supplier_config
+
+
 networks:
   default:
     external:
       name: ssdcrmdockerdev_default
+volumes:
+  dummy_keys:
+  supplier_config:

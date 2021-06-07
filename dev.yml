@@ -27,8 +27,8 @@ services:
     container_name: sftp
     image: atmoz/sftp
     volumes:
-      - ~/Documents/sftp/ppo_dev/print_services/:/home/centos/ppo_dev/print_services/
-      - ~/Documents/sftp/qmprint_dev/print_services:/home/centos/qmprint_dev/print_services/
+      - ~/Documents/sftp/supplier_A/print_services/:/home/centos/supplier_A/print_services/
+      - ~/Documents/sftp/supplier_B/print_services/:/home/centos/supplier_B/print_services/
       - ./id_rsa.pub:/home/centos/.ssh/keys/id_rsa.pub:ro
     ports:
       - "${EX_SFTP_PORT}:22"
