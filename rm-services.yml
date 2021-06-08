@@ -84,10 +84,10 @@ services:
         - SFTP_PORT=22
         - SFTP_USERNAME=centos
         - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
-        - SFTP_PASSPHRASE=secret
+        - SFTP_PASSPHRASE=dummy_secret
         - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
         - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-        - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/supplier_config/dummy_supplier_config.json
+        - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
         - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
 
       restart: always
@@ -99,7 +99,7 @@ services:
         start_period: 50s
       volumes:
         - ./dummy_keys:/home/printfile/dummy_keys
-        - ./supplier_config:/home/printfile/supplier_config
+        - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
 
 
 networks:
@@ -108,4 +108,3 @@ networks:
       name: ssdcrmdockerdev_default
 volumes:
   dummy_keys:
-  supplier_config:

@@ -29,7 +29,7 @@ services:
     volumes:
       - ~/Documents/sftp/supplier_A/print_services/:/home/centos/supplier_A/print_services/
       - ~/Documents/sftp/supplier_B/print_services/:/home/centos/supplier_B/print_services/
-      - ./id_rsa.pub:/home/centos/.ssh/keys/id_rsa.pub:ro
+      - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
     ports:
       - "${EX_SFTP_PORT}:22"
     command: centos::2000
