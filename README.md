@@ -7,7 +7,7 @@ The goal of this repository is to enable team members to stand up a dockerized l
 1. You can access the google cloud docker registry
 1. Ask to become a team member of sdcplatform
 1. Run `gcloud auth configure-docker` to associate your docker with the GCR registry
-1. Run `docker network create censusrmdockerdev_default` to create the docker network
+1. Run `docker network create ssdcrmdockerdev_default` to create the docker network
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
 
 Important is to configure your python environment - that's covered next.
@@ -136,7 +136,7 @@ make: *** [up] Error 1
 
 ### Docker network
 ```
-ERROR: Network censusrmdockerdev_default declared as external, but could not be found. Please create the network manually using `docker network create censusrmdockerdev_default` and try again.
+ERROR: Network ssdcrmdockerdev_default declared as external, but could not be found. Please create the network manually using `docker network create ssdcrmdockerdev_default` and try again.
 make: *** [up] Error 1
 ```
 
