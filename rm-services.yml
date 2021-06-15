@@ -2,7 +2,7 @@ version: "3.4"
 services:
   caseprocessor:
     container_name: caseprocessor
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-caseprocessor
+    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-caseprocessor
     external_links:
       - postgres
       - rabbitmq
@@ -67,7 +67,7 @@ services:
 
   printfilesvc:
       container_name: printfilesvc
-      image: eu.gcr.io/census-rm-ci/rm/ssdc-rm-print-file-service:latest
+      image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-print-file-service:latest
       external_links:
         - rabbitmq
         - sftp
