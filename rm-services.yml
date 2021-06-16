@@ -101,6 +101,27 @@ services:
         - ./dummy_keys:/home/printfile/dummy_keys
         - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
 
+  supporttool:
+    container_name: supporttool
+    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-suppporttool
+    ports:
+      - "9999:9999"
+    external_links:
+      - postgres
+      - rabbitmq
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
+      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/actuator/info"]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
 
 networks:
   default:
