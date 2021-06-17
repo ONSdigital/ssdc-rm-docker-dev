@@ -25,6 +25,30 @@ services:
       retries: 4
       start_period: 45s
 
+  caseapi:
+    container_name: caseapi
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-case-api
+    ports:
+      - "${CASE_API_PORT}:8161"
+    external_links:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
+      - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
+      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
+      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8161/actuator/info"]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
+
+
   uacqid:
     container_name: uacqid
     image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-uac-qid-service
