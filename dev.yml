@@ -47,13 +47,13 @@ services:
 
   pubsub-emulator:
     container_name: pubsub-emulator
-    image: eu.gcr.io/census-rm-ci/rm/gcloud-pubsub-emulator:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/gcloud-pubsub-emulator:latest
     ports:
       - "8538:8538"
 
   notifystub:
     container_name: notifystub
-    image: eu.gcr.io/census-rm-ci/rm/census-rm-notify-stub:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/census-rm-notify-stub:latest
     ports:
       - "8917:5000"
 
