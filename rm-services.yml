@@ -2,7 +2,7 @@ version: "3.4"
 services:
   caseprocessor:
     container_name: caseprocessor
-    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-caseprocessor
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-caseprocessor
     external_links:
       - postgres
       - rabbitmq
@@ -52,7 +52,7 @@ services:
 
   uacqid:
     container_name: uacqid
-    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-uac-qid-service
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-uac-qid-service
     ports:
       - "${UAC_PORT}:8164"
     external_links:
@@ -73,7 +73,7 @@ services:
 
   exceptionmanager:
     container_name: exceptionmanager
-    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-exception-manager
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-exception-manager
     ports:
       - "${EXCEPTIONMANAGER_PORT}:8666"
     restart: always
@@ -93,7 +93,7 @@ services:
 
   printfilesvc:
     container_name: printfilesvc
-    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-print-file-service
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-print-file-service
     external_links:
       - rabbitmq
       - sftp
@@ -130,7 +130,7 @@ services:
 
   supporttool:
     container_name: supporttool
-    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-support-tool
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-support-tool
     ports:
       - "9999:9999"
     external_links:
