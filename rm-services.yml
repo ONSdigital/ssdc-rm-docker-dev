@@ -2,7 +2,7 @@ version: "3.4"
 services:
   caseprocessor:
     container_name: caseprocessor
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-case-processor
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-caseprocessor
     external_links:
       - postgres
       - rabbitmq
