@@ -53,7 +53,7 @@ services:
 
   notifystub:
     container_name: notifystub
-    image: eu.gcr.io/census-rm-ci/rm/census-rm-notify-stub:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/census-rm-notify-stub:latest
     ports:
       - "8917:5000"
 
