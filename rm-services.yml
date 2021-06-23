@@ -19,11 +19,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - CASEREFGENERATORKEY=${CASEREFGENERATORKEY}
     healthcheck:
-      test: ["CMD", "find", "/tmp/case-processor-healthy", "-mmin", "-1"]
+      test: [ "CMD", "find", "/tmp/case-processor-healthy", "-mmin", "-1" ]
       interval: 60s
       timeout: 10s
-      retries: 4
+      retries: 10
       start_period: 45s
+
 
   caseapi:
     container_name: caseapi
@@ -42,7 +43,7 @@ services:
       - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8161/actuator/info"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8161/actuator/info" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -63,11 +64,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8164/actuator/info"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8164/actuator/info" ]
       interval: 60s
       timeout: 10s
       retries: 4
       start_period: 30s
+
 
   exceptionmanager:
     container_name: exceptionmanager
@@ -82,7 +84,7 @@ services:
       - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
       - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8666/actuator/info"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8666/actuator/info" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -90,40 +92,41 @@ services:
 
 
   printfilesvc:
-      container_name: printfilesvc
-      image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-print-file-service
-      external_links:
-        - rabbitmq
-        - sftp
-      environment:
-        - RABBIT_QUEUE=Action.Printer
-        - RABBIT_HOST=${RABBIT_HOST}
-        - RABBIT_PORT=${RABBIT_PORT}
-        - RABBIT_USERNAME=guest
-        - RABBIT_PASSWORD=guest
-        - RABBIT_VIRTUALHOST=/
-        - READINESS_FILE_PATH=/tmp/ready
-        - ENVIRONMENT=DEV
-        - SFTP_HOST=sftp
-        - SFTP_PORT=22
-        - SFTP_USERNAME=centos
-        - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
-        - SFTP_PASSPHRASE=dummy_secret
-        - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
-        - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-        - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
-        - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
+    container_name: printfilesvc
+    image: eu.gcr.io/ons-ci-rm/rm/ssdc-rm-print-file-service
+    external_links:
+      - rabbitmq
+      - sftp
+    environment:
+      - RABBIT_QUEUE=Action.Printer
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - RABBIT_VIRTUALHOST=/
+      - READINESS_FILE_PATH=/tmp/ready
+      - ENVIRONMENT=DEV
+      - SFTP_HOST=sftp
+      - SFTP_PORT=22
+      - SFTP_USERNAME=centos
+      - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
+      - SFTP_PASSPHRASE=dummy_secret
+      - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
+      - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+      - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
+      - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
 
-      restart: always
-      healthcheck:
-        test: sh -c "[ -f /tmp/ready ]"
-        interval: 10s
-        timeout: 10s
-        retries: 10
-        start_period: 50s
-      volumes:
-        - ./dummy_keys:/home/printfile/dummy_keys
-        - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
+    restart: always
+    healthcheck:
+      test: sh -c "[ -f /tmp/ready ]"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 50s
+    volumes:
+      - ./dummy_keys:/home/printfile/dummy_keys
+      - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
+
 
   supporttool:
     container_name: supporttool
@@ -141,11 +144,12 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9999/actuator/info"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/info" ]
       interval: 60s
       timeout: 10s
       retries: 4
       start_period: 50s
+
 
 networks:
   default:
