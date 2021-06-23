@@ -47,7 +47,7 @@ services:
 
   pubsub-emulator:
     container_name: pubsub-emulator
-    image: eu.gcr.io/census-rm-ci/rm/gcloud-pubsub-emulator:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/gcloud-pubsub-emulator:latest
     ports:
       - "8538:8538"
 
