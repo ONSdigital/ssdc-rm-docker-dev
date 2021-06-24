@@ -104,7 +104,7 @@
         "x-dead-letter-routing-key": "events.caseProceessor.surveyLaunched"
       }
     },
-        {
+    {
       "name": "events.caseProceessor.authentication",
       "vhost": "/",
       "durable": true,

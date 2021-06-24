@@ -2,7 +2,7 @@ version: "3.4"
 services:
   ons-postgres:
     container_name: postgres
-    image: postgres:11
+    image: postgres:13
     command: ["-c", "shared_buffers=256MB", "-c", "max_connections=500"]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
@@ -47,13 +47,13 @@ services:
 
   pubsub-emulator:
     container_name: pubsub-emulator
-    image: eu.gcr.io/census-rm-ci/rm/gcloud-pubsub-emulator:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/gcloud-pubsub-emulator:latest
     ports:
       - "8538:8538"
 
   notifystub:
     container_name: notifystub
-    image: eu.gcr.io/census-rm-ci/rm/census-rm-notify-stub:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/census-rm-notify-stub:latest
     ports:
       - "8917:5000"
 
