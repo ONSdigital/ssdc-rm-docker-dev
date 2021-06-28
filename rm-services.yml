@@ -98,7 +98,7 @@ services:
       - rabbitmq
       - sftp
     environment:
-      - RABBIT_QUEUE=Action.Printer
+      - RABBIT_QUEUE=caseProcessor.printFileSvc.printBatchRow
       - RABBIT_HOST=${RABBIT_HOST}
       - RABBIT_PORT=${RABBIT_PORT}
       - RABBIT_USERNAME=guest
