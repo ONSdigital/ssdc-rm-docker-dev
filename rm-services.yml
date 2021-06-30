@@ -151,6 +151,31 @@ services:
       start_period: 50s
 
 
+  pubsub-adapter:
+    container_name: pubsubadapter
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-pubsub-adapter
+    external_links:
+      - rabbitmq
+      - pubsub-emulator
+    environment:
+      - LOG_LEVEL=INFO
+      - RABBIT_USERNAME=guest
+      - RABBIT_PASSWORD=guest
+      - RABBIT_HOST=${RABBIT_HOST}
+      - RABBIT_PORT=${RABBIT_PORT}
+      - EQ_RECEIPT_PROJECT=${EQ_RECEIPT_PROJECT}
+      - READINESS_FILE_PATH=/tmp/ready
+      - PUBSUB_EMULATOR_HOST=${PUBSUB_EMULATOR_HOSTNAME}:${PUBSUB_EMULATOR_PORT}
+      - QUARANTINE_MESSAGE_URL=http://${EXCEPTIONMANAGER_HOST}:${EXCEPTIONMANAGER_PORT}/storeskippedmessage
+    restart: always
+    healthcheck:
+      test: sh -c "[ -f /tmp/ready ]"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 50s
+
+
 networks:
   default:
     external:
