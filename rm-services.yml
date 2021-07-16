@@ -144,7 +144,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/info" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
