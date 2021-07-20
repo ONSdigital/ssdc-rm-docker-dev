@@ -142,6 +142,7 @@ services:
       - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - DUMMYUSERIDENTITY=${DUMMY_USER}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
