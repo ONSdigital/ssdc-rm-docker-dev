@@ -176,6 +176,25 @@ services:
       retries: 10
       start_period: 50s
 
+  rops:
+    container_name: rops
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-response-operations
+    ports:
+      - "${ROPS_PORT}:7777"
+    external_links:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - DUMMYUSERIDENTITY=${DUMMY_USER}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
 
 networks:
   default:
