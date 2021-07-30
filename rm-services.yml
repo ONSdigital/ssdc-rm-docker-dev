@@ -6,7 +6,10 @@ services:
     external_links:
       - postgres
       - uacqid
+      - pubsub-emulator
     environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
@@ -23,28 +26,29 @@ services:
       start_period: 45s
 
 
-#  caseapi:
-#    container_name: caseapi
-#    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-case-api
-#    ports:
-#      - "${CASE_API_PORT}:8161"
-#    external_links:
-#      - postgres
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
-#      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
-#      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-#      - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
-#      - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
-#      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
-#      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:8161/actuator/health" ]
-#      interval: 60s
-#      timeout: 10s
-#      retries: 4
-#      start_period: 50s
+  caseapi:
+    container_name: caseapi
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-case-api
+    ports:
+      - "${CASE_API_PORT}:8161"
+    external_links:
+      - postgres
+      - pubsub-emulator
+    environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
+      - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8161/actuator/health" ]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
 
 
   uacqid:
@@ -78,7 +82,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - SPRING_CLOUD_GCP_PUBSUB-EMULATOR-HOST=pubsub-emulator:8538
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8666/actuator/health" ]
       interval: 60s
@@ -87,40 +90,35 @@ services:
       start_period: 30s
 
 
-#  printfilesvc:
-#    container_name: printfilesvc
-#    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-print-file-service
-#    external_links:
-#      - rabbitmq
-#      - sftp
-#    environment:
-#      - RABBIT_QUEUE=caseProcessor.printFileSvc.printBatchRow
-#      - RABBIT_HOST=${RABBIT_HOST}
-#      - RABBIT_PORT=${RABBIT_PORT}
-#      - RABBIT_USERNAME=guest
-#      - RABBIT_PASSWORD=guest
-#      - RABBIT_VIRTUALHOST=/
-#      - READINESS_FILE_PATH=/tmp/ready
-#      - ENVIRONMENT=DEV
-#      - SFTP_HOST=sftp
-#      - SFTP_PORT=22
-#      - SFTP_USERNAME=centos
-#      - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
-#      - SFTP_PASSPHRASE=dummy_secret
-#      - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
-#      - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-#      - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
-#      - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
-#    restart: always
-#    healthcheck:
-#      test: sh -c "[ -f /tmp/ready ]"
-#      interval: 10s
-#      timeout: 10s
-#      retries: 10
-#      start_period: 50s
-#    volumes:
-#      - ./dummy_keys:/home/printfile/dummy_keys
-#      - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
+  printfilesvc:
+    container_name: printfilesvc
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-print-file-service
+    external_links:
+      - pubsub-emulator
+      - sftp
+    environment:
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - READINESS_FILE_PATH=/tmp/ready
+      - ENVIRONMENT=DEV
+      - SFTP_HOST=sftp
+      - SFTP_PORT=22
+      - SFTP_USERNAME=centos
+      - SFTP_KEY_FILENAME=/home/printfile/dummy_keys/dummy_rsa
+      - SFTP_PASSPHRASE=dummy_secret
+      - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
+      - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+      - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
+      - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
+    restart: always
+    healthcheck:
+      test: sh -c "[ -f /tmp/ready ]"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 50s
+    volumes:
+      - ./dummy_keys:/home/printfile/dummy_keys
+      - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
 
 
   supporttool:
@@ -130,7 +128,6 @@ services:
       - "9999:9999"
     external_links:
       - postgres
-      - pubsub-emulator
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
@@ -170,25 +167,25 @@ services:
 #      retries: 10
 #      start_period: 50s
 
-#  rops:
-#    container_name: rops
-#    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-response-operations
-#    ports:
-#      - "${ROPS_PORT}:7777"
-#    external_links:
-#      - postgres
-#    environment:
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
-#      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
-#      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-#      - DUMMYUSERIDENTITY=${DUMMY_USER}
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
-#      interval: 60s
-#      timeout: 10s
-#      retries: 4
-#      start_period: 50s
+  rops:
+    container_name: rops
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-response-operations
+    ports:
+      - "${ROPS_PORT}:7777"
+    external_links:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - DUMMYUSERIDENTITY=${DUMMY_USER}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
 
 networks:
   default:
