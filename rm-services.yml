@@ -5,12 +5,12 @@ services:
     image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-caseprocessor
     external_links:
       - postgres
-      - rabbitmq
       - uacqid
+      - pubsub-emulator
     environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
-      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
-      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
@@ -33,14 +33,15 @@ services:
       - "${CASE_API_PORT}:8161"
     external_links:
       - postgres
+      - pubsub-emulator
     environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
-      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
-      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8161/actuator/health" ]
@@ -81,8 +82,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
-      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8666/actuator/health" ]
       interval: 60s
@@ -95,15 +94,10 @@ services:
     container_name: printfilesvc
     image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-print-file-service
     external_links:
-      - rabbitmq
+      - pubsub-emulator
       - sftp
     environment:
-      - RABBIT_QUEUE=caseProcessor.printFileSvc.printBatchRow
-      - RABBIT_HOST=${RABBIT_HOST}
-      - RABBIT_PORT=${RABBIT_PORT}
-      - RABBIT_USERNAME=guest
-      - RABBIT_PASSWORD=guest
-      - RABBIT_VIRTUALHOST=/
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
       - SFTP_HOST=sftp
@@ -115,7 +109,6 @@ services:
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
       - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
       - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
-
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
@@ -134,14 +127,15 @@ services:
     ports:
       - "9999:9999"
     external_links:
+      - pubsub-emulator
       - postgres
-      - rabbitmq
     environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
-      - SPRING_RABBITMQ_HOST=${RABBIT_HOST}
-      - SPRING_RABBITMQ_PORT=${RABBIT_PORT}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SPRING_CLOUD_GCP_PUBSUB-EMULATOR-HOST=pubsub-emulator:8538
       - DUMMYUSERIDENTITY=${DUMMY_USER}
     restart: always
     healthcheck:
@@ -151,30 +145,6 @@ services:
       retries: 4
       start_period: 50s
 
-
-  pubsub-adapter:
-    container_name: pubsubadapter
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-pubsub-adapter
-    external_links:
-      - rabbitmq
-      - pubsub-emulator
-    environment:
-      - LOG_LEVEL=INFO
-      - RABBIT_USERNAME=guest
-      - RABBIT_PASSWORD=guest
-      - RABBIT_HOST=${RABBIT_HOST}
-      - RABBIT_PORT=${RABBIT_PORT}
-      - EQ_RECEIPT_PROJECT=${EQ_RECEIPT_PROJECT}
-      - READINESS_FILE_PATH=/tmp/ready
-      - PUBSUB_EMULATOR_HOST=${PUBSUB_EMULATOR_HOSTNAME}:${PUBSUB_EMULATOR_PORT}
-      - QUARANTINE_MESSAGE_URL=http://${EXCEPTIONMANAGER_HOST}:${EXCEPTIONMANAGER_PORT}/storeskippedmessage
-    restart: always
-    healthcheck:
-      test: sh -c "[ -f /tmp/ready ]"
-      interval: 10s
-      timeout: 10s
-      retries: 10
-      start_period: 50s
 
   rops:
     container_name: rops

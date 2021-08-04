@@ -9,20 +9,6 @@ services:
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8-management
-    ports:
-      - "5369:4369"
-      - "45672:25672"
-      - "${EX_RABBIT_PORT}:5671-5672"
-      - "16671-16672:15671-15672"
-    environment:
-      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
-    volumes:
-      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-      - ./rabbitmq/definitions.json:/opt/definitions.json
-
   sftp:
     container_name: sftp
     image: atmoz/sftp
