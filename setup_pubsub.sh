@@ -5,12 +5,6 @@ source .env
 # Wait for pubsub-emulator to come up
 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' '$PUBSUB_SETUP_HOST')" != "200" ]]; do sleep 1; done'
 
-# This topic is for EQ to send receipts to RM using the OBJECT_FINALIZE bucket method
-curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/$RECEIPT_TOPIC_PROJECT_ID/topics/$RECEIPT_TOPIC_NAME
-curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/$RECEIPT_TOPIC_PROJECT_ID/subscriptions/$SUBSCRIPTION_NAME -H 'Content-Type: application/json' -d '{"topic": "projects/'$RECEIPT_TOPIC_PROJECT_ID'/topics/'$RECEIPT_TOPIC_NAME'"}'
-
-# Below are the minimum RM topics & events - ideally external systems will publish/subscribe to these, in the correct standardised format
-
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/topics/rm-internal-telephone-capture
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/subscriptions/rm-internal-telephone-capture_case-processor -H 'Content-Type: application/json' -d '{"topic": "projects/project/topics/rm-internal-telephone-capture"}'
 
