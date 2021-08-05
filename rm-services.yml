@@ -109,6 +109,12 @@ services:
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
       - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
       - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_USERNAME=${POSTGRES_USERNAME}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_DATABASE=${POSTGRES_DATABASE}
+      - PUBSUB_PROJECT=${PUBSUB_PROJECT}
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
