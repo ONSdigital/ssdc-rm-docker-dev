@@ -42,4 +42,4 @@ curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/topics/event_uac-updat
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/subscriptions/event_uac-update_rh -H 'Content-Type: application/json' -d '{"topic": "projects/project/topics/event_uac-update"}'
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/topics/rm-internal-sms-fulfilment
-curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/subscriptions/rm-internal-sms-fulfilment_rm-case-processor -H 'Content-Type: application/json' -d '{"topic": "projects/project/topics/rm-internal-sms-fulfilment"}'
+curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/project/subscriptions/rm-internal-sms-fulfilment_case-processor -H 'Content-Type: application/json' -d '{"topic": "projects/project/topics/rm-internal-sms-fulfilment"}'
