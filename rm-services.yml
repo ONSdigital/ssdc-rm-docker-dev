@@ -182,6 +182,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
+      - NOTIFY_SERVICE_URL=https://dummy-notify:123
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8162/actuator/health" ]
