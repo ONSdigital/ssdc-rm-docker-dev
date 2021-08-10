@@ -167,7 +167,7 @@ services:
       start_period: 50s
 
   notifyservice:
-    container_name: caseapi
+    container_name: notifyservice
     image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-notify-service
     ports:
       - "${NOTIFY_SERVICE_PORT}:8162"
