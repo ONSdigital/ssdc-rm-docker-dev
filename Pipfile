@@ -9,6 +9,7 @@ sqlalchemy = "*"
 
 [dev-packages]
 retrying = "*"
+google-cloud-pubsub = "*"
 
 [requires]
 python_version = "3.7"
