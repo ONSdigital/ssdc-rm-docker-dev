@@ -8,7 +8,6 @@ fi
 
 source .env
 
-echo "Pipe in message to send to topic '$1', or paste and it ctrl-d when done"
-message=$(cat)
+echo $PUBSUB_SETUP_HOST
 
-PUBSUB_EMULATOR_HOST=$PUBSUB_SETUP_HOST pipenv run python publish_message.py $1 $message
+PIPENV_DONT_LOAD_ENV=1 PUBSUB_EMULATOR_HOST=$PUBSUB_SETUP_HOST pipenv run python publish_message.py $1

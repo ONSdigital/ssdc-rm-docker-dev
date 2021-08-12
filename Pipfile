@@ -4,12 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sqlalchemy = "*"
-"psycopg2-binary" = "*"
-
-[dev-packages]
-retrying = "*"
-google-cloud-pubsub = "*"
+google-cloud-pubsub = "==1.7.0"
 
 [requires]
-python_version = "3.7"
+python_version = "3.9"
