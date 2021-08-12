@@ -8,6 +8,4 @@ fi
 
 source .env
 
-echo $PUBSUB_SETUP_HOST
-
 PIPENV_DONT_LOAD_ENV=1 PUBSUB_EMULATOR_HOST=$PUBSUB_SETUP_HOST pipenv run python publish_message.py $1
