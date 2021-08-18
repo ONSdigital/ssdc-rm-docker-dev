@@ -4,7 +4,6 @@ up:
 	docker network inspect ssdcrmdockerdev_default >/dev/null || docker network create ssdcrmdockerdev_default
 	docker-compose -f dev.yml -f rm-services.yml up -d ${SERVICE} ;
 	pipenv install --dev
-	pipenv run python setup_database.py
 	./setup_pubsub.sh
 	
 down:

@@ -9,7 +9,6 @@ services:
       - pubsub-emulator
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
-      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
@@ -36,7 +35,7 @@ services:
       - pubsub-emulator
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
-      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=our-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
@@ -98,6 +97,7 @@ services:
       - sftp
     environment:
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - PUBSUB_PROJECT=our-project
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
       - SFTP_HOST=sftp
@@ -131,7 +131,6 @@ services:
       - postgres
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
-      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
