@@ -165,4 +165,4 @@ hard and fast numbers, this is just what worked for people.
 
 ## Publishing to Pub/Sub Topics in Emulator
 
-Run `./publish_message.sh <TOPIC>` and then paste in a JSON message. Press CTRL-D when you're done.
+Run `./publish_message.sh <PROJECT> <TOPIC>` and then paste in a JSON message. Press CTRL-D when you're done.
