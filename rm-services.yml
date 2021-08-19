@@ -8,8 +8,9 @@ services:
       - uacqid
       - pubsub-emulator
     environment:
-      - spring_profiles_active=emulator
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
+      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=shared-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
@@ -131,8 +132,9 @@ services:
       - pubsub-emulator
       - postgres
     environment:
-      - spring_profiles_active=emulator
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
+      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=shared-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
