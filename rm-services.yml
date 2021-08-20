@@ -138,7 +138,6 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - SPRING_CLOUD_GCP_PUBSUB-EMULATOR-HOST=pubsub-emulator:8538
       - DUMMYUSERIDENTITY=${DUMMY_USER}
     restart: always
     healthcheck:
