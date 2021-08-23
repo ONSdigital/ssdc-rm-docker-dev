@@ -2,7 +2,7 @@
 
 if [ $# -ne 2 ]
 then
-    echo "Usage: publish_message.sh <PROJECT> <TOPIC>"
+    echo "Usage: publish_message.sh <TOPIC> <PROJECT>"
     exit -1
 fi
 

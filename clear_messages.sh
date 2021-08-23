@@ -2,7 +2,7 @@
 
 if [ $# -ne 2 ]
 then
-    echo "Usage: clear_messages.sh <PROJECT> <SUBSCRIPTION>"
+    echo "Usage: clear_messages.sh <SUBSCRIPTION> <PROJECT>"
     exit -1
 fi
 

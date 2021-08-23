@@ -2,7 +2,7 @@
 
 if [ $# -ne 2 ]
 then
-    echo "Usage: get_message.sh <PROJECT> <SUBSCRIPTION>"
+    echo "Usage: get_message.sh <SUBSCRIPTION> <PROJECT>"
     exit -1
 fi
 
