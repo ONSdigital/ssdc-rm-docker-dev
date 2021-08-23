@@ -166,3 +166,11 @@ hard and fast numbers, this is just what worked for people.
 ## Publishing to Pub/Sub Topics in Emulator
 
 Run `./publish_message.sh <PROJECT> <TOPIC>` and then paste in a JSON message. Press CTRL-D when you're done.
+
+## Pulling from Pub/Sub Subscriptions in Emulator
+
+Run `./get_message.sh <PROJECT> <SUBSCRIPTION>`.
+
+## Purging Messages on a Pub/Sub Subscriptions in Emulator
+
+Run `watch './get_message.sh <PROJECT> <SUBSCRIPTION>'`.
