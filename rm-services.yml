@@ -168,6 +168,31 @@ services:
       retries: 4
       start_period: 50s
 
+  notifyservice:
+    container_name: notifyservice
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-notify-service
+    ports:
+      - "${NOTIFY_SERVICE_PORT}:8162"
+    external_links:
+      - postgres
+      - pubsub-emulator
+    environment:
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=our-project
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
+      - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
+      - NOTIFY_BASEURL=${NOTIFY_STUB_BASEURL}
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8162/actuator/health" ]
+      interval: 60s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
+
 networks:
   default:
     external:
