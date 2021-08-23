@@ -173,4 +173,4 @@ Run `./get_message.sh <PROJECT> <SUBSCRIPTION>`.
 
 ## Purging Messages on a Pub/Sub Subscriptions in Emulator
 
-Run `watch './get_message.sh <PROJECT> <SUBSCRIPTION>'`.
+Run `./clear_messages.sh <PROJECT> <SUBSCRIPTION>`.

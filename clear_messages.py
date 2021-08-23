@@ -15,12 +15,15 @@ def clear_messages(project, subscription):
             print("No messages on subscription")
     except DeadlineExceeded:
         print("No messages on subscription")
-        return
+        return False
 
     ack_ids = [message.ack_id for message in response.received_messages]
 
     if ack_ids:
         subscriber.acknowledge(subscription_path, ack_ids)
+        return True
+
+    return False
 
 
 def parse_arguments():
@@ -35,4 +38,7 @@ def parse_arguments():
 if __name__ == '__main__':
     args = parse_arguments()
 
-    clear_messages(args.project, args.subscription)
+    while clear_messages(args.project, args.subscription):
+        print(".")
+
+    print("Messages purged")
