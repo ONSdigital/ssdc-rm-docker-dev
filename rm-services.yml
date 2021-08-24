@@ -162,6 +162,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
+      - PRINTSUPPLIERCONFIGFILE=/home/response-operations/dummy_supplier_config.json
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
@@ -169,6 +170,8 @@ services:
       timeout: 10s
       retries: 4
       start_period: 50s
+    volumes:
+      - ./dummy_supplier_config.json:/home/response-operations/dummy_supplier_config.json
 
   notifyservice:
     container_name: notifyservice
