@@ -1,7 +1,5 @@
 import argparse
 
-from google.api_core import retry
-from google.api_core.exceptions import DeadlineExceeded
 from google.cloud import pubsub_v1
 
 
