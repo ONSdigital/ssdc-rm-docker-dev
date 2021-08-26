@@ -24,7 +24,7 @@ def get_message(project, subscription):
         if ack_ids:
             subscriber.acknowledge(subscription=subscription_path, ack_ids=ack_ids)
         else:
-            print(f'No messages found.')
+            print(f'No messages found')
 
 
 def parse_arguments():
