@@ -44,27 +44,27 @@
                 "grpc"
             ],
             "hashes": [
-                "sha256:108cf94336aed7e614eafc53933ef02adf63b9f0fd87e8f8212acaa09eaca456",
-                "sha256:1d63e2b28057d79d64795c9a70abcecb5b7e96da732d011abf09606a39b48701"
+                "sha256:428805de17b48ca1af2fdb5bbfc2334e1bbcb0ea4a16506fa1337fb29c8f37c8",
+                "sha256:bd9eb0709f4e10dd6fddb32fd0788a190b434426c258be6e00ef40da136d768d"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.31.1"
+            "markers": "python_version >= '3.6'",
+            "version": "==2.0.0"
         },
         "google-auth": {
             "hashes": [
-                "sha256:bd6aa5916970a823e76ffb3d5c3ad3f0bedafca0a7fa53bc15149ab21cb71e05",
-                "sha256:f1094088bae046fb06f3d1a3d7df14717e8d959e9105b79c57725bd4e17597a2"
+                "sha256:c012c8be7c442c8309ca8fa0876fef33f5fd977c467be1e1c1c2f721e8ebd73c",
+                "sha256:ea1af050b3e06eb73e4470f704d23007307bc0e87c13e015f6b90460f1407bd3"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
-            "version": "==1.34.0"
+            "markers": "python_version >= '3.6'",
+            "version": "==2.0.1"
         },
         "google-cloud-pubsub": {
             "hashes": [
-                "sha256:1788ad25a765ea83499d8f4410d4c8ba026597cb82db46d2f7217f1c2525ad65",
-                "sha256:7b49095623de343f2ad91a066e1bd59fe196ab8e088c6f11351fb54ca7b1303e"
+                "sha256:c5cb4a7d02fe0979d45586575fea574a3201d6c24d93b6720bdbfb4ef8eaa329",
+                "sha256:d52d386617c110c35043f6ff37ccb50d9f37c75b1e5586409ed64a3e8ae61038"
             ],
             "index": "pypi",
-            "version": "==2.7.0"
+            "version": "==2.7.1"
         },
         "googleapis-common-protos": {
             "extras": [
@@ -254,13 +254,6 @@
             "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==2.4.7"
         },
-        "pytz": {
-            "hashes": [
-                "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da",
-                "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"
-            ],
-            "version": "==2021.1"
-        },
         "pyyaml": {
             "hashes": [
                 "sha256:08682f6b72c722394747bddaf0aa62277e02557c0fd1c42cb853016a38f8dedf",
@@ -309,7 +302,7 @@
                 "sha256:78f9a9bf4e7be0c5ded4583326e7461e3a3c5aae24073648b4bdfa797d78c9d2",
                 "sha256:9d689e6ca1b3038bc82bf8d23e944b6b6037bc02301a574935b2dd946e0353b9"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_version >= '3.5' and python_version < '4'",
             "version": "==4.7.2"
         },
         "six": {
