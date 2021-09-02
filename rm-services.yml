@@ -140,6 +140,8 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
       - PRINTSUPPLIERCONFIGFILE=/home/supporttool/dummy_supplier_config.json
+      - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
+      - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
