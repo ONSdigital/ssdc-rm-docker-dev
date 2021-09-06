@@ -98,8 +98,6 @@ services:
       - pubsub-emulator
       - sftp
     environment:
-      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
-      - PUBSUB_PROJECT=our-project
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
       - SFTP_HOST=sftp
@@ -116,7 +114,6 @@ services:
       - DB_USERNAME=${POSTGRES_USERNAME}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_DATABASE=${POSTGRES_DATABASE}
-      - PUBSUB_PROJECT=${PUBSUB_PROJECT}
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
