@@ -2,7 +2,7 @@ version: "3.4"
 services:
   ons-postgres:
     container_name: postgres
-    image: rm-postgres-case-integration-testing:latest
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-dev-common-postgres:latest
     command: ["-c", "shared_buffers=256MB", "-c", "max_connections=500"]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
