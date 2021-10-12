@@ -1,6 +1,28 @@
 #!/bin/bash
 
-BUILD_AND_TEST_ERRORS=""
+# This records important cmd results, so we can output it at the end
+REPO_CMD_HISTORY=""
+
+function execute_and_record_command() {
+    CMD_TO_EXECUTE=$1
+    FAILURE_UNEXPECTED=$2
+
+    echo "${CMD_TO_EXECUTE}"
+    $CMD_TO_EXECUTE
+
+    EXIT_CODE=$?
+
+    # The exciting \033[1;32m  is colouring,  Green for good, yellow for Info, Red for Error
+    if [ "$EXIT_CODE" = 0 ] ; then
+        REPO_CMD_HISTORY+="\033[1;32m   SUCCESS: running command [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+    else
+        if [ "$FAILURE_UNEXPECTED" = true ] ; then
+            REPO_CMD_HISTORY+="\033[1;31m   ERROR: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+        else
+            REPO_CMD_HISTORY+="\033[0;33m   INFO: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+        fi
+    fi
+}
 
 
 function checkout_repo_branch() {
@@ -8,12 +30,13 @@ function checkout_repo_branch() {
     BRANCH_NAME_TO_CHECKOUT=$2
     GIT_SSH="git@github.com:ONSdigital/${REPO_NAME}.git"
 
-    echo "Getting cloning ${GIT_SSH}"
-    git clone $GIT_SSH
+    REPO_CMD_HISTORY+="WORKING ON REPO: ${REPO_NAME} \n"
+
+    # echo "Getting cloning ${GIT_SSH}"
+    execute_and_record_command "git clone ${GIT_SSH} " true
     cd $REPO_NAME
 
-    echo "Attempting to checkout Branch ${BRANCH_NAME_TO_CHECKOUT}"
-    git checkout $BRANCH_NAME_TO_CHECKOUT
+    execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
 }
 
 function checkout_and_build_repo_branch() {
@@ -26,21 +49,10 @@ function checkout_and_build_repo_branch() {
 
     if [ "$SKIP_TESTS" = true ] ; then
         echo "${REPO_NAME} Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
-        $SKIP_TESTS_CMD
+        execute_and_record_command "${SKIP_TESTS_CMD}" true        
     else
         echo "${REPO_NAME} Running Tests: Running CMD: ${RUN_TESTS_CMD}"
-        $RUN_TESTS_CMD
-    fi
-
-    # If there's a Non Zero Exit this was a failure.  We should record this
-    EXIT_CODE=$?
-    echo "${REPO_NAME} build cmd, EXIT_CODE ${EXIT_CODE}"
-
-    if [ "$EXIT_CODE" = 0 ] ; then
-        echo "${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE 0"
-    else
-        echo "${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE ${EXIT_CODE}"
-        BUILD_AND_TEST_ERRORS+="${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE ${EXIT_CODE}\n"
+        execute_and_record_command "${RUN_TESTS_CMD}" true  
     fi
 }
 
@@ -60,8 +72,9 @@ function killOffRunningDocker() {
 }
 
 function createNewBaseDir() {
+    $BRANCH_DIR_TO_MAKE=$1
     
-    BASE_DIR="/Users/lozel/projects/HACK_TEST_DIR/${BRANCH_NAME}"
+    BASE_DIR="/Users/lozel/projects/HACK_TEST_DIR/${BRANCH_DIR_TO_MAKE}"
 
     if [ -d $BASE_DIR ] 
     then
@@ -102,9 +115,11 @@ else
     echo "Script will be Running Tests"
 fi
 
-
+# Kill and remove running containers, Flag to disable exists
 killOffRunningDocker
-createNewBaseDir
+
+# Create the baseDir
+createNewBaseDir $BRANCH_NAME
 
 ########################################################################################################################
 #  Build, Install and Test DDL and Applications
@@ -118,7 +133,7 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# # Case API
+# Case API
 checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
@@ -146,45 +161,38 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-########################################################################################################################
-#  Set up Docker Dev
-########################################################################################################################
-checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME 
-pipenv install --dev
-make pull
-make up
+# ########################################################################################################################
+# #  Set up Docker Dev
+# ########################################################################################################################
+checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
+execute_and_record_command "pipenv install --dev" true
+execute_and_record_command "make pull" true
+execute_and_record_command "make up" true
 cd ..
 
 
-########################################################################################################################
-#  Acceptance Tests
-########################################################################################################################
+# ########################################################################################################################
+# #  Acceptance Tests
+# ########################################################################################################################
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
-pipenv install --dev
+execute_and_record_command "pipenv install --dev" true
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Skipping ATs"
 else
     echo "Running ATs. Sleeping 60 to allow all services to be up"
     sleep 60
-    make test
+    execute_and_record_command "make test" true
 fi
 cd ..
 
 
 ########################################################################################################################
-# Output Errors
+# Output Record
 ########################################################################################################################
 
 echo -e "\n\n"
-
-if [ -z "$BUILD_AND_TEST_ERRORS"]; then
-    echo -e  "\033[1;32m This script did not record any errors in build or test. Take with a pinch of saltt: \033[0m"
-else
-    echo -e  "\033[1;31m ERRORS in build and test: \033[0m"
-    echo -e "\033[1;31m ${BUILD_AND_TEST_ERRORS} \033[0m"
-fi
-
+echo -e $REPO_CMD_HISTORY
 echo -e "\n\n"
 
 ########################################################################################################################
