@@ -84,13 +84,11 @@ function killOffRunningDocker() {
 
 function createNewBaseDir() {
     BRANCH_DIR_TO_MAKE=$1
+    BASE_DIR=$2
 
     echo "Passed branch dir to make ${BRANCH_DIR_TO_MAKE}"
-    
-    # TODO: Get to grandparent Dir. this could be an optional argument instead
-    cd ../../
 
-    BASE_DIR="${PWD}/${BRANCH_DIR_TO_MAKE}"
+    BASE_DIR="${BASE_DIR}/${BRANCH_DIR_TO_MAKE}"
 
     # TODO:  What to do if dir alerady exists? rm it, fail etc.. 
 
@@ -117,8 +115,14 @@ if [ -z "$BRANCH_NAME" ]; then
     exit 2;
 fi
 
+# Base Dir to Checkout To
+if [ -z "$BASE_DIR" ]; then
+    echo "You Must set BASE_DIR=<your base dir>.  BASE_DIR does not need the branch name, that will be created"
+    exit 2;
+fi
+
 # Create the baseDir
-createNewBaseDir $BRANCH_NAME
+createNewBaseDir $BRANCH_NAME $BASE_DIR
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
