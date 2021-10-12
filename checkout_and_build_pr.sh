@@ -1,5 +1,20 @@
 #!/bin/bash
 
+########################################################################################################################
+# This script will run and attempt to create a new dir in the parent directory of where it's run
+# It will then attempt to checkout, build, test (optional) all the required repos to make a running system
+# This includes running docker-dev and the ATs. 
+# 
+#   command              required/defaut           info
+#  BRANCH_NAME                REQUIRED             BRANCH TO CHECKOUT
+#  SKIP_TESTS                 FALSE                SKIP BUILD AND ACCEPTANCE TESTS 
+#  KILL_DOCKER                TRUE                 KILLS AND REMOVES RUNNING CONTAINERS
+########################################################################################################################
+
+BRANCH_DIR_TO_MAKE
+
+
+
 # This records important cmd results, so we can output it at the end
 REPO_CMD_HISTORY=""
 
@@ -14,12 +29,12 @@ function execute_and_record_command() {
 
     # The exciting \033[1;32m  is colouring,  Green for good, yellow for Info, Red for Error
     if [ "$EXIT_CODE" = 0 ] ; then
-        REPO_CMD_HISTORY+="\033[1;32m   SUCCESS: running command [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+        REPO_CMD_HISTORY+="\033[1;32m     SUCCESS: running command [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n\033[0m"
     else
         if [ "$FAILURE_UNEXPECTED" = true ] ; then
-            REPO_CMD_HISTORY+="\033[1;31m   ERROR: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+            REPO_CMD_HISTORY+="\033[1;31m     ERROR: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n\033[0m"
         else
-            REPO_CMD_HISTORY+="\033[0;33m   INFO: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n \033[0m"
+            REPO_CMD_HISTORY+="\033[0;33m     INFO: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n\033[0m"
         fi
     fi
 }
@@ -30,7 +45,7 @@ function checkout_repo_branch() {
     BRANCH_NAME_TO_CHECKOUT=$2
     GIT_SSH="git@github.com:ONSdigital/${REPO_NAME}.git"
 
-    REPO_CMD_HISTORY+="WORKING ON REPO: ${REPO_NAME} \n"
+    REPO_CMD_HISTORY+="REPO: ${REPO_NAME} \n"
 
     # echo "Getting cloning ${GIT_SSH}"
     execute_and_record_command "git clone ${GIT_SSH} " true
@@ -72,19 +87,16 @@ function killOffRunningDocker() {
 }
 
 function createNewBaseDir() {
-    $BRANCH_DIR_TO_MAKE=$1
+    BRANCH_DIR_TO_MAKE=$1
+
+    echo "Passed branch dir to make ${BRANCH_DIR_TO_MAKE}"
     
-    BASE_DIR="/Users/lozel/projects/HACK_TEST_DIR/${BRANCH_DIR_TO_MAKE}"
+    # TODO: Get to grandparent Dir. this could be an optional argument instead
+    cd ../../
 
-    if [ -d $BASE_DIR ] 
-    then
-        echo "Directory ${BASE_DIR} exists." 
-    else
-        echo "Error: Directory ${BASE_DIR} does not exists."
-    fi
-    #  RM it if it already exists
-    # rm $BASE_DIR
+    BASE_DIR="${PWD}/${BRANCH_DIR_TO_MAKE}"
 
+    # TODO:  What to do if dir alerady exists? rm it, fail etc.. 
 
     echo "Making new base dir ${BASE_DIR}"
     mkdir $BASE_DIR
@@ -100,14 +112,17 @@ function createNewBaseDir() {
 #
 ########################################################################################################################
 
+# Internal Variable, will use to record time
+SECONDS=0
+
 # Check Branch name is set
 if [ -z "$BRANCH_NAME" ]; then
     echo "You Must set BRANCH_NAME=<branch to test>, use main, if you want main"
     exit 2;
 fi
 
-# Internal Variable, will use to record time
-SECONDS=0
+# Create the baseDir
+createNewBaseDir $BRANCH_NAME
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
@@ -118,12 +133,12 @@ fi
 # Kill and remove running containers, Flag to disable exists
 killOffRunningDocker
 
-# Create the baseDir
-createNewBaseDir $BRANCH_NAME
-
 ########################################################################################################################
 #  Build, Install and Test DDL and Applications
 ########################################################################################################################
+
+# TODO: Maven -Dmaven.test.skip=true stops maven running tests.  However the pre & post integration steps are still 
+# run. Ideally we'd skip these too.  May require pom changes though.
 
 # # Install DDL
 checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
@@ -142,14 +157,16 @@ checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "mvn clean 
 cd ..
 
 # # Printfilesvc
-checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "build_and_test" "docker_build"
+checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
 cd ..
 
 # Support Tool
+# Currently no skip test version.  Support tool is quite quick testing anyway
 checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "./build.sh" "./build.sh"
 cd ..
 
 # # ROPS
+# Currently no skip test version.  ROPS is quite quick testing anyway
 checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME "./build.sh" "./build.sh"
 cd ..
 
