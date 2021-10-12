@@ -11,10 +11,6 @@
 #  KILL_DOCKER                TRUE                 KILLS AND REMOVES RUNNING CONTAINERS
 ########################################################################################################################
 
-BRANCH_DIR_TO_MAKE
-
-
-
 # This records important cmd results, so we can output it at the end
 REPO_CMD_HISTORY=""
 
@@ -140,7 +136,7 @@ killOffRunningDocker
 # TODO: Maven -Dmaven.test.skip=true stops maven running tests.  However the pre & post integration steps are still 
 # run. Ideally we'd skip these too.  May require pom changes though.
 
-# # Install DDL
+# Install DDL
 checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
 cd ..
 
@@ -152,31 +148,30 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# # Notify Service
+# Notify Service
 checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# # Printfilesvc
+# Printfilesvc
 checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
 cd ..
 
 # Support Tool
-# Currently no skip test version.  Support tool is quite quick testing anyway
-checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "./build.sh" "./build.sh"
+checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "./build.sh" "./build_no_test.sh"
 cd ..
 
-# # ROPS
-# Currently no skip test version.  ROPS is quite quick testing anyway
-checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME "./build.sh" "./build.sh"
+# ROPS
+checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME "./build.sh" "./build_no_test.sh"
 cd ..
 
 #Qid Service
 checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# #Exception Manger
+#Exception Manger
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
+
 
 # ########################################################################################################################
 # #  Set up Docker Dev
