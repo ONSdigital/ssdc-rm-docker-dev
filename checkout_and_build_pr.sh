@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BUILD_AND_TEST_ERRORS=""
+
 
 function checkout_repo_branch() {
     REPO_NAME=$1
@@ -23,11 +25,22 @@ function checkout_and_build_repo_branch() {
     checkout_repo_branch $REPO_NAME $BRANCH_NAME_TO_CHECKOUT
 
     if [ "$SKIP_TESTS" = true ] ; then
-        echo "Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
-        $SKIP_TESTS_CMD | tee file.txt 
+        echo "${REPO_NAME} Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
+        $SKIP_TESTS_CMD
     else
-        echo "Running Tests: Running CMD: ${RUN_TESTS_CMD}"
-        $RUN_TESTS_CMD | tee file.txt 
+        echo "${REPO_NAME} Running Tests: Running CMD: ${RUN_TESTS_CMD}"
+        $RUN_TESTS_CMD
+    fi
+
+    # If there's a Non Zero Exit this was a failure.  We should record this
+    EXIT_CODE=$?
+    echo "${REPO_NAME} build cmd, EXIT_CODE ${EXIT_CODE}"
+
+    if [ "$EXIT_CODE" = 0 ] ; then
+        echo "${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE 0"
+    else
+        echo "${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE ${EXIT_CODE}"
+        BUILD_AND_TEST_ERRORS+="${REPO_NAME} Running CMD: ${SKIP_TESTS_CMD}, EXIT CODE ${EXIT_CODE}\n"
     fi
 }
 
@@ -49,6 +62,16 @@ function killOffRunningDocker() {
 function createNewBaseDir() {
     
     BASE_DIR="/Users/lozel/projects/HACK_TEST_DIR/${BRANCH_NAME}"
+
+    if [ -d $BASE_DIR ] 
+    then
+        echo "Directory ${BASE_DIR} exists." 
+    else
+        echo "Error: Directory ${BASE_DIR} does not exists."
+    fi
+    #  RM it if it already exists
+    # rm $BASE_DIR
+
 
     echo "Making new base dir ${BASE_DIR}"
     mkdir $BASE_DIR
@@ -87,7 +110,7 @@ createNewBaseDir
 #  Build, Install and Test DDL and Applications
 ########################################################################################################################
 
-# Install DDL
+# # Install DDL
 checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
 cd ..
 
@@ -95,15 +118,15 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# Case API
+# # Case API
 checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# Notify Service
+# # Notify Service
 checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-# Printfilesvc
+# # Printfilesvc
 checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "build_and_test" "docker_build"
 cd ..
 
@@ -111,7 +134,7 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "./build.sh" "./build.sh"
 cd ..
 
-# ROPS
+# # ROPS
 checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME "./build.sh" "./build.sh"
 cd ..
 
@@ -119,7 +142,7 @@ cd ..
 checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
-#Exception Manger
+# #Exception Manger
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "mvn clean install" "mvn clean install -Dmaven.test.skip=true"
 cd ..
 
@@ -148,6 +171,21 @@ else
 fi
 cd ..
 
+
+########################################################################################################################
+# Output Errors
+########################################################################################################################
+
+echo -e "\n\n"
+
+if [ -z "$BUILD_AND_TEST_ERRORS"]; then
+    echo -e  "\033[1;32m This script did not record any errors in build or test. Take with a pinch of saltt: \033[0m"
+else
+    echo -e  "\033[1;31m ERRORS in build and test: \033[0m"
+    echo -e "\033[1;31m ${BUILD_AND_TEST_ERRORS} \033[0m"
+fi
+
+echo -e "\n\n"
 
 ########################################################################################################################
 # Output runtime
