@@ -174,3 +174,17 @@ Run `./get_message.sh <SUBSCRIPTION> <PROJECT>`.
 ## Purging Messages on a Pub/Sub Subscriptions in Emulator
 
 Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
+
+##  Checking out, building multiple branches from a PR
+
+Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> .SKIP_TESTS=true BASE_DIR=<base dir> ./checkout_and_build_pr.sh`
+
+This script will run and attempt to create a new dir in the parent directory of where it's run
+It will then attempt to checkout, build, test (optional) all the required repos to make a running system
+This includes running docker-dev and the ATs. 
+
+  command              required/defaut           info
+ BRANCH_NAME                REQUIRED             BRANCH TO CHECKOUT
+ SKIP_TESTS                 FALSE                SKIP BUILD AND ACCEPTANCE TESTS 
+ KILL_DOCKER                TRUE                 KILLS AND REMOVES RUNNING CONTAINERS
+ BASE_DIR                   REQUIRED  
