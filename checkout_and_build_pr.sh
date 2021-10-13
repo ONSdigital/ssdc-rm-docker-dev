@@ -91,6 +91,32 @@ function createNewBaseDir() {
     echo "Now in new DIR: ${PWD}"
 }
 
+function wait_until_containers_are_running_or_timeout() {
+    WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=60
+    starting_containers=""
+
+    while true
+    do
+        starting_containers = $("docker ps | grep -E 'starting|unhealthy'")
+        echo -e "${starting_containers}"
+
+        if ["$starting_containers" = ""] ; then
+            echo "Looks like containers are up"
+            return
+        fi
+            
+        # Wait and try again in a second
+        sleep 1
+
+        echo "RES: ${starting_containers}"
+    
+        i=$[$i+1]
+    done
+
+    echo -e "\033[1;31m  ERROR: Docker Images did not come up in expected time \n ${starting_containers} \033[0m"
+    exit 1
+}
+
 
 ########################################################################################################################
 #
@@ -100,6 +126,11 @@ function createNewBaseDir() {
 
 # Internal Variable, will use to record time
 SECONDS=0
+
+docker ps | grep -E 'starting|unhealthy'
+
+
+exit 1
 
 # Check Branch name is set
 if [ -z "$BRANCH_NAME" ]; then
@@ -124,6 +155,16 @@ fi
 
 # Kill and remove running containers, Flag to disable exists
 killOffRunningDocker
+
+checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
+execute_and_record_command "pipenv install --dev" true
+execute_and_record_command "make up" true
+popd
+
+wait_until_containers_are_running_or_timeout
+
+exit 0
+
 
 ########################################################################################################################
 #  Build, Install and Test DDL and Applications
