@@ -182,7 +182,6 @@ cd ..
 # ########################################################################################################################
 checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
 execute_and_record_command "pipenv install --dev" true
-execute_and_record_command "make pull" true
 execute_and_record_command "make up" true
 cd ..
 
