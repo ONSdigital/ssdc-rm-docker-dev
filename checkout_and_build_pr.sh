@@ -214,13 +214,15 @@ popd
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
 execute_and_record_command "pipenv install --dev" true
 
-if [ "$SKIP_TESTS" = true ] ; then
+if [ "$SKIP_TESTS" = true ]
+then
     echo "Skipping ATs"
 else
-    echo "Sleeping to allow for docker containers to be running ${PRE_AT_SLEEP}"
+    echo "Sleeping to allow for docker containers to be running ${PRE_AT_SLEEP} seconds"
     sleep $PRE_AT_SLEEP
     execute_and_record_command "make test" true
 fi
+
 popd
 
 
