@@ -95,11 +95,12 @@ function wait_until_containers_are_running_or_timeout() {
     WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=60
     starting_containers=""
 
-    while true
+    # Polls it for 300 seconds
+    for (( i=0; i<=300; i++ ))
     do
-        starting_containers = $("docker ps | grep -E 'starting|unhealthy'")
-        echo -e "${starting_containers}"
+        starting_containers=$(docker ps | grep -E 'starting|unhealthy')
 
+        # This echos, don't want it to.  It's very noisy
         if ["$starting_containers" = ""] ; then
             echo "Looks like containers are up"
             return
@@ -107,13 +108,11 @@ function wait_until_containers_are_running_or_timeout() {
             
         # Wait and try again in a second
         sleep 1
-
-        echo "RES: ${starting_containers}"
-    
-        i=$[$i+1]
+        
+        echo "Still waiting for healthy containers: after ${i} seconds"
     done
 
-    echo -e "\033[1;31m  ERROR: Docker Images did not come up in expected time \n ${starting_containers} \033[0m"
+    echo -e "\033[1;31m  ERROR: Docker Containers did not come up in expected time \n ${starting_containers} \033[0m"
     exit 1
 }
 
@@ -126,11 +125,6 @@ function wait_until_containers_are_running_or_timeout() {
 
 # Internal Variable, will use to record time
 SECONDS=0
-
-docker ps | grep -E 'starting|unhealthy'
-
-
-exit 1
 
 # Check Branch name is set
 if [ -z "$BRANCH_NAME" ]; then
@@ -155,16 +149,6 @@ fi
 
 # Kill and remove running containers, Flag to disable exists
 killOffRunningDocker
-
-checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
-execute_and_record_command "pipenv install --dev" true
-execute_and_record_command "make up" true
-popd
-
-wait_until_containers_are_running_or_timeout
-
-exit 0
-
 
 ########################################################################################################################
 #  Build, Install and Test DDL and Applications
@@ -215,14 +199,14 @@ popd
 # ########################################################################################################################
 # #  Acceptance Tests
 # ########################################################################################################################
+
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
 execute_and_record_command "pipenv install --dev" true
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Skipping ATs"
 else
-    echo "Running ATs. Sleeping 60 to allow all services to be up"
-    sleep 60
+    wait_until_containers_are_running_or_timeout
     execute_and_record_command "make test" true
 fi
 popd
