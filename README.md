@@ -183,8 +183,7 @@ This script will run and attempt to create a new dir in the parent directory of 
 It will then attempt to checkout, build, test (optional) all the required repos to make a running system
 This includes running docker-dev and the ATs. 
 
-  command              required/defaut           info
- BRANCH_NAME                REQUIRED             BRANCH TO CHECKOUT
- SKIP_TESTS                 FALSE                SKIP BUILD AND ACCEPTANCE TESTS 
- KILL_DOCKER                TRUE                 KILLS AND REMOVES RUNNING CONTAINERS
- BASE_DIR                   REQUIRED             SPECIFY THE BASE_DIR THAT PR WILL BE BUILT IN
+  command              required/defaut                                  info
+ BRANCH_NAME            DEFAULTS TO DOCKER DEV BRANCH                 BRANCH TO CHECKOUT
+ SKIP_TESTS             FALSE                                         SKIP BUILD AND ACCEPTANCE TESTS 
+ KILL_DOCKER            TRUE                                          KILLS AND REMOVES RUNNING CONTAINERS

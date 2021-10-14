@@ -39,10 +39,13 @@ function checkout_repo_branch() {
     execute_and_record_command "git clone ${GIT_SSH} " true
     pushd $REPO_NAME
 
-    $EXIT_CODE=execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
+    execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
+
+    # This is safety for pulling a 2nd time etc
+    execute_and_record_command "git pull" true
 
     # TODO: If there's no branch for this repo (quite likely),  then just pull the image
-    # This would save a lot of building time.
+    # This would save a lot of building time.  Needs thinking about etc
 }
 
 function checkout_and_build_repo_branch() {
@@ -81,18 +84,16 @@ function killOffRunningDocker() {
 
 function createNewBaseDir() {
     BRANCH_DIR_TO_MAKE=$1
-    BASE_DIR=$2
+    PR_DIR="${PWD}/PR_DIR"
 
-    echo "Passed branch dir to make ${BRANCH_DIR_TO_MAKE}"
+    echo "PR_DIR: "
+    mkdir -p $PR_DIR
+    cd $PR_DIR
 
-    BASE_DIR="${BASE_DIR}/${BRANCH_DIR_TO_MAKE}"
+    echo "Making branch dir to make ${BRANCH_DIR_TO_MAKE}"
+    mkdir $BRANCH_DIR_TO_MAKE
 
-    # TODO:  What to do if dir alerady exists? rm it, fail etc.. 
-
-    echo "Making new base dir ${BASE_DIR}"
-    mkdir $BASE_DIR
-
-    cd $BASE_DIR
+    cd $BRANCH_DIR_TO_MAKE
     echo "Now in new DIR: ${PWD}"
 }
 
@@ -131,18 +132,13 @@ SECONDS=0
 
 # Check Branch name is set
 if [ -z "$BRANCH_NAME" ]; then
-    echo "You Must set BRANCH_NAME=<branch to test>, use main, if you want main"
-    exit 2;
-fi
+    BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-# Base Dir to Checkout To
-if [ -z "$BASE_DIR" ]; then
-    echo "You Must set BASE_DIR=<your base dir>.  BASE_DIR does not need the branch name, that will be created"
-    exit 2;
+    echo "Branch name not set, going to use BRANCH_NAME: ${BRANCH_NAME}"
 fi
 
 # Create the baseDir
-createNewBaseDir $BRANCH_NAME $BASE_DIR
+createNewBaseDir $BRANCH_NAME
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
