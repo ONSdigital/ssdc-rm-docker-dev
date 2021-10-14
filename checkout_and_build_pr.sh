@@ -91,6 +91,9 @@ function createNewBaseDir() {
     echo "Now in new DIR: ${PWD}"
 }
 
+
+# TODO: Make a nice version of this. Currently not going to use this.
+# Mainly it's too noisy
 function wait_until_containers_are_running_or_timeout() {
     WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=60
     starting_containers=""
@@ -138,6 +141,11 @@ if [ -z "$BASE_DIR" ]; then
     exit 2;
 fi
 
+# See if the user wishes to use a different Pre AT sleep wait.
+if [ -z "$PRE_AT_SLEEP" ]; then
+    PRE_AT_SLEEP=90
+fi
+
 # Create the baseDir
 createNewBaseDir $BRANCH_NAME $BASE_DIR
 
@@ -159,6 +167,9 @@ killOffRunningDocker
 
 MVN_INSTALL_TEST_CMD="mvn clean install"
 MVN_INSTALL_ONLY_CMD="mvn clean install -Dmaven.test.skip=true -DdockerCompose.skip=true"
+
+# Install Shared 
+checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
 
 # Install DDL
 checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
@@ -196,9 +207,9 @@ execute_and_record_command "make up" true
 popd
 
 
-# ########################################################################################################################
-# #  Acceptance Tests
-# ########################################################################################################################
+# # ########################################################################################################################
+# # #  Acceptance Tests
+# # ########################################################################################################################
 
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
 execute_and_record_command "pipenv install --dev" true
@@ -206,7 +217,8 @@ execute_and_record_command "pipenv install --dev" true
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Skipping ATs"
 else
-    wait_until_containers_are_running_or_timeout
+    echo "Sleeping to allow for docker containers to be running ${PRE_AT_SLEEP}"
+    sleep $PRE_AT_SLEEP
     execute_and_record_command "make test" true
 fi
 popd
