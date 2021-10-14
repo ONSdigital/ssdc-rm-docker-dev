@@ -23,6 +23,8 @@ function execute_and_record_command() {
             REPO_CMD_HISTORY+="\033[0;33m     INFO: running [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n\033[0m"
         fi
     fi
+
+    return $EXIT_CODE
 }
 
 
@@ -37,7 +39,10 @@ function checkout_repo_branch() {
     execute_and_record_command "git clone ${GIT_SSH} " true
     pushd $REPO_NAME
 
-    execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
+    $EXIT_CODE=execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
+
+    # TODO: If there's no branch for this repo (quite likely),  then just pull the image
+    # This would save a lot of building time.
 }
 
 function checkout_and_build_repo_branch() {
@@ -91,21 +96,16 @@ function createNewBaseDir() {
     echo "Now in new DIR: ${PWD}"
 }
 
-
-# TODO: Make a nice version of this. Currently not going to use this.
-# Mainly it's too noisy
+# This gives a rough guide, support tool is often the slowest to start.
 function wait_until_containers_are_running_or_timeout() {
-    WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=60
-    starting_containers=""
+    WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=180
 
-    # Polls it for 300 seconds
-    for (( i=0; i<=300; i++ ))
+    for (( i=0; i<=$WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS; i++ ))
     do
-        starting_containers=$(docker ps | grep -E 'starting|unhealthy')
+        support_tool_logs=$(docker logs --tail=10 supporttool)
 
-        # This echos, don't want it to.  It's very noisy
-        if ["$starting_containers" = ""] ; then
-            echo "Looks like containers are up"
+        if [[ $support_tool_logs == *"Started Application in"* ]]; then
+            echo "Looks like containers are up, well support tool anyways.."
             return
         fi
             
@@ -115,7 +115,7 @@ function wait_until_containers_are_running_or_timeout() {
         echo "Still waiting for healthy containers: after ${i} seconds"
     done
 
-    echo -e "\033[1;31m  ERROR: Docker Containers did not come up in expected time \n ${starting_containers} \033[0m"
+    echo -e "\033[1;31m  ERROR: Docker Containers did not come up with expected time of ${WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS} seconds \n \033[0m"
     exit 1
 }
 
@@ -139,11 +139,6 @@ fi
 if [ -z "$BASE_DIR" ]; then
     echo "You Must set BASE_DIR=<your base dir>.  BASE_DIR does not need the branch name, that will be created"
     exit 2;
-fi
-
-# See if the user wishes to use a different Pre AT sleep wait.
-if [ -z "$PRE_AT_SLEEP" ]; then
-    PRE_AT_SLEEP=90
 fi
 
 # Create the baseDir
@@ -198,9 +193,9 @@ checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "${MVN_INS
 #Exception Manger
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
 
-# ########################################################################################################################
-# #  Set up Docker Dev
-# ########################################################################################################################
+# # ########################################################################################################################
+# # #  Set up Docker Dev
+# # ########################################################################################################################
 checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
 execute_and_record_command "pipenv install --dev" true
 execute_and_record_command "make up" true
@@ -219,7 +214,8 @@ then
     echo "Skipping ATs"
 else
     echo "Sleeping to allow for docker containers to be running ${PRE_AT_SLEEP} seconds"
-    sleep $PRE_AT_SLEEP
+    wait_until_containers_are_running_or_timeout
+    # sleep $PRE_AT_SLEEP
     execute_and_record_command "make test" true
 fi
 
@@ -237,4 +233,4 @@ echo -e "\n\n"
 ########################################################################################################################
 # Output runtime
 ########################################################################################################################
-echo "Total Runtime ${SECONDS} seconds"
+printf 'Total Runtime %dh:%dm:%ds\n' $((SECONDS/3600)) $((SECONDS%3600/60)) $((SECONDS%60))

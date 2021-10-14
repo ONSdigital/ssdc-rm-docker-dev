@@ -188,4 +188,3 @@ This includes running docker-dev and the ATs.
  SKIP_TESTS                 FALSE                SKIP BUILD AND ACCEPTANCE TESTS 
  KILL_DOCKER                TRUE                 KILLS AND REMOVES RUNNING CONTAINERS
  BASE_DIR                   REQUIRED             SPECIFY THE BASE_DIR THAT PR WILL BE BUILT IN
- PRE_AT_SLEEP               90                   HOW MANY SECONDS TO SLEEP PRIOR TO ATS, ALLOWS DOCKER TO COME UP
