@@ -177,7 +177,7 @@ Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
 
 ##  Checking out, building multiple branches from a PR
 
-Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> .SKIP_TESTS=true BASE_DIR=<base dir> ./checkout_and_build_pr.sh`
+Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> ./checkout_and_build_pr.sh`
 
 This script will run and attempt to create a new dir in the parent directory of where it's run
 It will then attempt to checkout, build, test (optional) all the required repos to make a running system
