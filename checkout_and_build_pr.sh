@@ -91,7 +91,7 @@ function createNewBaseDir() {
     cd $PR_DIR
 
     echo "Making branch dir to make ${BRANCH_DIR_TO_MAKE}"
-    mkdir $BRANCH_DIR_TO_MAKE
+    mkdir -p $BRANCH_DIR_TO_MAKE
 
     cd $BRANCH_DIR_TO_MAKE
     echo "Now in new DIR: ${PWD}"
