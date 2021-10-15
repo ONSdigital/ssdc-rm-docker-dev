@@ -152,10 +152,6 @@ killOffRunningDocker
 ########################################################################################################################
 #  Build, Install and Test DDL and Applications
 ########################################################################################################################
-
-# TODO: Maven -Dmaven.test.skip=true stops maven running tests.  However the pre & post integration steps are still 
-# run. Ideally we'd skip these too.  May require pom changes though.
-
 MVN_INSTALL_TEST_CMD="mvn clean install"
 MVN_INSTALL_ONLY_CMD="mvn clean install -Dmaven.test.skip=true -DdockerCompose.skip=true"
 
@@ -189,19 +185,18 @@ checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "${MVN_INS
 #Exception Manger
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
 
-# # ########################################################################################################################
-# # #  Set up Docker Dev
-# # ########################################################################################################################
+########################################################################################################################
+#  Set up Docker Dev
+########################################################################################################################
 checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
 execute_and_record_command "pipenv install --dev" true
 execute_and_record_command "make up" true
 popd
 
 
-# # ########################################################################################################################
-# # #  Acceptance Tests
-# # ########################################################################################################################
-
+########################################################################################################################
+#  Acceptance Tests
+########################################################################################################################
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
 execute_and_record_command "pipenv install --dev" true
 
@@ -216,7 +211,6 @@ else
 fi
 
 popd
-
 
 ########################################################################################################################
 # Output Record
