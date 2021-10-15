@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # This records important cmd results, so we can output it at the end
 REPO_CMD_HISTORY=""
 
@@ -13,7 +12,7 @@ function execute_and_record_command() {
 
     EXIT_CODE=$?
 
-    # The exciting \033[1;32m  is colouring,  Green for good, yellow for Info, Red for Error
+    # The exciting \033[1;32m code is colouring,  Green for good, yellow for Info, Red for Error
     if [ "$EXIT_CODE" = 0 ] ; then
         REPO_CMD_HISTORY+="\033[1;32m     SUCCESS: running command [${CMD_TO_EXECUTE}], exit code ${EXIT_CODE} \n\033[0m"
     else
@@ -35,7 +34,7 @@ function checkout_repo_branch() {
 
     REPO_CMD_HISTORY+="REPO: ${REPO_NAME} \n"
 
-    # echo "Getting cloning ${GIT_SSH}"
+    # echo "Git cloning ${GIT_SSH}"
     execute_and_record_command "git clone ${GIT_SSH} " true
     pushd $REPO_NAME
 
@@ -68,7 +67,6 @@ function checkout_and_build_repo_branch() {
 }
 
 function killOffRunningDocker() {
-
     # Not sure if you'd never want to do this?  Doesn't cost any time if already clear
     if [ "$KILL_DOCKER" = false ] ; then
         echo "Leaving Docker alone"
@@ -79,7 +77,6 @@ function killOffRunningDocker() {
         echo 'Removing any stopped Docker containers'
         docker rm $(docker ps -a -q)
     fi
-
 }
 
 function createNewBaseDir() {
@@ -97,7 +94,8 @@ function createNewBaseDir() {
     echo "Now in new DIR: ${PWD}"
 }
 
-# This gives a rough guide, support tool is often the slowest to start.
+# This gives a rough guide, support tool is usually the slowest to start. And needs to be up
+# for the ATs to consume it's APIs.  
 function wait_until_containers_are_running_or_timeout() {
     WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=180
 
@@ -119,7 +117,6 @@ function wait_until_containers_are_running_or_timeout() {
     echo -e "\033[1;31m  ERROR: Docker Containers did not come up with expected time of ${WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS} seconds \n \033[0m"
     exit 1
 }
-
 
 ########################################################################################################################
 #
