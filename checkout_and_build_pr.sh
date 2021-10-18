@@ -185,11 +185,7 @@ checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_I
 ########################################################################################################################
 #  Set up Docker Dev
 ########################################################################################################################
-checkout_repo_branch "ssdc-rm-docker-dev" $BRANCH_NAME
-execute_and_record_command "pipenv install --dev" true
 execute_and_record_command "make up" true
-popd
-
 
 ########################################################################################################################
 #  Acceptance Tests
