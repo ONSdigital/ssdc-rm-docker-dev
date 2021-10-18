@@ -3,6 +3,9 @@
 # This records important cmd results, so we can output it at the end
 REPO_CMD_HISTORY=""
 
+# This will store the PR_DIR/<branch_name> created.  Bash doesn't like function returns
+BRANCH_PR_DIR=""
+
 function execute_and_record_command() {
     CMD_TO_EXECUTE=$1
     FAILURE_UNEXPECTED=$2
@@ -93,7 +96,8 @@ function createNewBaseDir() {
     cd $BRANCH_DIR_TO_MAKE
     echo "Now in new DIR: ${PWD}"
 
-    return $PWD
+    # because Bash is a painful, set a global
+    BRANCH_PR_DIR=$PWD
 }
 
 # This gives a rough guide, support tool is usually the slowest to start. And needs to be up
@@ -140,7 +144,7 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 # Create the baseDir
-BRANCH_PR_DIR=createNewBaseDir $BRANCH_NAME
+createNewBaseDir $BRANCH_NAME
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
