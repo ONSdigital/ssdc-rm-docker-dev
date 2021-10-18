@@ -92,6 +92,8 @@ function createNewBaseDir() {
 
     cd $BRANCH_DIR_TO_MAKE
     echo "Now in new DIR: ${PWD}"
+
+    return $PWD
 }
 
 # This gives a rough guide, support tool is usually the slowest to start. And needs to be up
@@ -127,6 +129,9 @@ function wait_until_containers_are_running_or_timeout() {
 # Internal Variable, will use to record time
 SECONDS=0
 
+# We'll need to return here
+DOCKER_DEV_DIR=$PWD
+
 # Check Branch name is set
 if [ -z "$BRANCH_NAME" ]; then
     BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
@@ -135,7 +140,7 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 # Create the baseDir
-createNewBaseDir $BRANCH_NAME
+BRANCH_PR_DIR=createNewBaseDir $BRANCH_NAME
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
@@ -185,11 +190,13 @@ checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_I
 ########################################################################################################################
 #  Set up Docker Dev
 ########################################################################################################################
+cd $DOCKER_DEV_DIR
 execute_and_record_command "make up" true
 
 ########################################################################################################################
 #  Acceptance Tests
 ########################################################################################################################
+cd $BRANCH_PR_DIR
 checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
 execute_and_record_command "pipenv install --dev" true
 
