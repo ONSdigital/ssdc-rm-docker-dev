@@ -179,9 +179,14 @@ Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
 
 Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> ./checkout_and_build_pr.sh`
 
-This script will run and attempt to create a new dir in the parent directory of where it's run
-It will then attempt to checkout, build, test (optional) all the required repos to make a running system
-This includes running docker-dev and the ATs. 
+This will checkout and build a PR Branch for you.
+This script does not checkout docker-dev (what happens if the PR includes an update to the script!)
+Instead if the PR contains a docker-dev PR, checkout that docker dev.  Run ./checkout_and_build_pr.sh and 
+it'll look at the branch you're on and checkout and install in ./PR_DIR/  under docker dev.
+It should bring up the new images and unless SKIP_TESTS=true it will run the ATs too.
+
+If the PR doesn't have a docker dev, then run the script from main and specify the BRANCH_NAME.
+
 
   command                   defaut                                         info
  BRANCH_NAME            DEFAULTS TO DOCKER DEV BRANCH                 BRANCH TO CHECKOUT
