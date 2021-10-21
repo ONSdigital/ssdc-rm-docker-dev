@@ -19,7 +19,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - CASEREFGENERATORKEY=${CASEREFGENERATORKEY}
-      - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
       - RAS-RM-PARTY-SERVICE_CONNECTION_HOST=host.docker.internal
       - QUEUECONFIG_RAS-RM-PUBSUB-PROJECT=ras-rm-project
     healthcheck:
@@ -151,6 +150,7 @@ services:
       - PRINTSUPPLIERCONFIGFILE=/home/supporttool/dummy_supplier_config.json
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+      - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
