@@ -174,3 +174,21 @@ Run `./get_message.sh <SUBSCRIPTION> <PROJECT>`.
 ## Purging Messages on a Pub/Sub Subscriptions in Emulator
 
 Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
+
+##  Checking out, building multiple branches from a PR
+
+Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> ./checkout_and_build_pr.sh`
+
+This will checkout and build a PR Branch for you.
+This script does not checkout docker-dev (what happens if the PR includes an update to the script!)
+Instead if the PR contains a docker-dev PR, checkout that docker dev.  Run ./checkout_and_build_pr.sh and 
+it'll look at the branch you're on and checkout and install in ./PR_DIR/  under docker dev.
+It should bring up the new images and unless SKIP_TESTS=true it will run the ATs too.
+
+If the PR doesn't have a docker dev, then run the script from main and specify the BRANCH_NAME.
+
+
+  command                   defaut                                         info
+ BRANCH_NAME            DEFAULTS TO DOCKER DEV BRANCH                 BRANCH TO CHECKOUT
+ SKIP_TESTS             FALSE                                         SKIP BUILD AND ACCEPTANCE TESTS 
+ KILL_DOCKER            TRUE                                          KILLS AND REMOVES RUNNING CONTAINERS
