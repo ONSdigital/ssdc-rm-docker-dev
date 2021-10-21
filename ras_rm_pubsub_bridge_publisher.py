@@ -1,3 +1,5 @@
+import os
+
 from google.cloud import pubsub_v1
 
 from flask import Flask
@@ -5,6 +7,7 @@ from flask import request
 from flask import jsonify
 
 app = Flask(__name__)
+ras_rm_gcp_dev_username = os.getenv("RASRM_DEV_USERNAME")
 
 
 @app.route("/")
@@ -16,8 +19,7 @@ def get_info():
 def handle_post_message():
     print("Forwarding message from bridge to RAS-RM pubsub.")
     message = request.get_data()
-    # send_message('ssdc-rm-nickgrant12', 'event_case-update', message)
-    send_message('ras-rm-dev', 'case-notification-grantn', message)
+    send_message('ras-rm-dev', f'case-notification-{ras_rm_gcp_dev_username}', message)
     return jsonify({'sent': True})
 
 
@@ -30,4 +32,10 @@ def send_message(project, topic, message):
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port='5000')
+    if not ras_rm_gcp_dev_username:
+        print ('ERROR: Must set RASRM-DEV-USERNAME')
+        exit(-1)
+
+    print(f"Forwarding for messages to {ras_rm_gcp_dev_username} RAS-RM dev GCP pubsub topic..\n")
+
+    app.run(host='0.0.0.0', port='5634')

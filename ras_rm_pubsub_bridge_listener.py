@@ -4,8 +4,6 @@ import requests
 
 project_id = "ras-rm-project"
 subscription_id = "case-notification_testing"
-# project_id = "shared-project"
-# subscription_id = "event_case-update_rh"
 
 subscriber = pubsub_v1.SubscriberClient()
 # The `subscription_path` method creates a fully qualified identifier
@@ -15,7 +13,7 @@ subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
     print(f"Forwarding message from pubsub emulator to bridge.")
-    requests.post('http://localhost:5000/message', data=message.data)
+    requests.post('http://localhost:5634/message', data=message.data)
     message.ack()
 
 
