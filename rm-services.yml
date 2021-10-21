@@ -20,6 +20,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - CASEREFGENERATORKEY=${CASEREFGENERATORKEY}
       - RAS-RM-PARTY-SERVICE_CONNECTION_HOST=host.docker.internal
+      - RAS-RM-CASE-SERVICE_CONNECTION_HOST=host.docker.internal
       - QUEUECONFIG_RAS-RM-PUBSUB-PROJECT=ras-rm-project
     healthcheck:
       test: [ "CMD", "find", "/tmp/case-processor-healthy", "-mmin", "-1" ]
