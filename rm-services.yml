@@ -91,9 +91,9 @@ services:
       start_period: 30s
 
 
-  printfilesvc:
-    container_name: printfilesvc
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-print-file-service
+  exportfileservice:
+    container_name: exportfileservice
+    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-export-file-service
     external_links:
       - pubsub-emulator
       - sftp
@@ -107,8 +107,8 @@ services:
       - SFTP_PASSPHRASE=dummy_secret
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-      - SUPPLIER_CONFIG_JSON_PATH=/home/printfile/dummy_supplier_config.json
-      - SUPPLIER_KEY_DIRECTORY=/home/printfile/dummy_keys
+      - DESTINATION_CONFIG_JSON_PATH=/home/export_file_service/dummy_destination_config.json
+      - DESTINATION_KEY_DIRECTORY=/home/export_file_service/dummy_keys
       - DB_HOST=${POSTGRES_HOST}
       - DB_PORT=${POSTGRES_PORT}
       - DB_USERNAME=${POSTGRES_USERNAME}
@@ -122,8 +122,8 @@ services:
       retries: 10
       start_period: 50s
     volumes:
-      - ./dummy_keys:/home/printfile/dummy_keys
-      - ./dummy_supplier_config.json:/home/printfile/dummy_supplier_config.json
+      - ./dummy_keys:/home/export_file_service/dummy_keys
+      - ./dummy_destination_config.json:/home/export_file_service/dummy_destination_config.json
 
 
   supporttool:
@@ -145,7 +145,7 @@ services:
       - NOTIFYSERVICE_CONNECTION_PORT=${NOTIFY_SERVICE_PORT}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
       - DUMMYUSERIDENTITY-ALLOWED=true
-      - PRINTSUPPLIERCONFIGFILE=/home/supporttool/dummy_supplier_config.json
+      - PRINTSUPPLIERCONFIGFILE=/home/supporttool/dummy_destination_config.json
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
     restart: always
@@ -156,7 +156,7 @@ services:
       retries: 4
       start_period: 50s
     volumes:
-      - ./dummy_supplier_config.json:/home/supporttool/dummy_supplier_config.json
+      - ./dummy_destination_config.json:/home/supporttool/dummy_destination_config.json
 
   rops:
     container_name: rops
@@ -170,7 +170,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
-      - PRINTSUPPLIERCONFIGFILE=/home/response-operations/dummy_supplier_config.json
+      - PRINTSUPPLIERCONFIGFILE=/home/response-operations/dummy_destination_config.json
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
@@ -179,7 +179,7 @@ services:
       retries: 4
       start_period: 50s
     volumes:
-      - ./dummy_supplier_config.json:/home/response-operations/dummy_supplier_config.json
+      - ./dummy_destination_config.json:/home/response-operations/dummy_destination_config.json
 
   notifyservice:
     container_name: notifyservice
