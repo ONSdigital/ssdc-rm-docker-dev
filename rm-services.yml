@@ -107,8 +107,8 @@ services:
       - SFTP_PASSPHRASE=dummy_secret
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-      - DESTINATION_CONFIG_JSON_PATH=/home/export_file_service/dummy_destination_config.json
-      - DESTINATION_KEY_DIRECTORY=/home/export_file_service/dummy_keys
+      - DESTINATION_CONFIG_JSON_PATH=/home/export-file-service/dummy_destination_config.json
+      - DESTINATION_KEY_DIRECTORY=/home/export-file-service/dummy_keys
       - DB_HOST=${POSTGRES_HOST}
       - DB_PORT=${POSTGRES_PORT}
       - DB_USERNAME=${POSTGRES_USERNAME}
@@ -122,8 +122,8 @@ services:
       retries: 10
       start_period: 50s
     volumes:
-      - ./dummy_keys:/home/export_file_service/dummy_keys
-      - ./dummy_destination_config.json:/home/export_file_service/dummy_destination_config.json
+      - ./dummy_keys:/home/export-file-service/dummy_keys
+      - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
 
 
   supporttool:
