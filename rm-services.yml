@@ -170,7 +170,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
-      - PRINTSUPPLIERCONFIGFILE=/home/response-operations/dummy_destination_config.json
+      - EXPORTFILEDESTINATIONCONFIGFILE=/home/response-operations/dummy_destination_config.json
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
