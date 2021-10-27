@@ -177,7 +177,7 @@ checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "make build" "mak
 checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "make build" "make build_no_test"
 
 # Export File Service
-checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
+checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "make build_and_test" "make docker_build" # TODO update repo name
 
 # Support Tool
 checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "make build" "make build_no_test"
