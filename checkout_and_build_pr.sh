@@ -168,16 +168,16 @@ checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${M
 checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
 
 # Case Processor
-checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME "make build" "make build_no_test"
 
 # Case API
-checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "make build" "make build_no_test"
 
 # Notify Service
-checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "make build" "make build_no_test"
 
-# Printfilesvc
-checkout_and_build_repo_branch "ssdc-rm-print-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
+# Export File Service
+checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
 
 # Support Tool
 checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "make build" "make build_no_test"
