@@ -1,0 +1,10 @@
+{
+  "SUPPLIER_A": {
+    "sftpDirectory": "supplier_A/print_services/",
+    "encryptionKeyFilename": "dummy-key-supplier-a-public.asc"
+  },
+  "SUPPLIER_B": {
+    "sftpDirectory": "supplier_B/print_services/",
+    "encryptionKeyFilename": "dummy-key-supplier-b-public.asc"
+  }
+}
