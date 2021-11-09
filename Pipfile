@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 google-cloud-pubsub = "*"
+flask = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"
