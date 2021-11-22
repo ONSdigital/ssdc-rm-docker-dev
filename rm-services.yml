@@ -108,8 +108,9 @@ services:
       - DB_USERNAME=${POSTGRES_USERNAME}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_DATABASE=${POSTGRES_DATABASE}
-      - SENT_EXPORT_FILE_BUCKET=./export_files
-      - PLATFORM=LOCAL
+      - FILE_UPLOAD_DESTINATION=/home/export-file-service/export_files
+      - FILE_UPLOAD_MODE=LOCAL
+
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
@@ -120,7 +121,7 @@ services:
     volumes:
       - ./dummy_keys:/home/export-file-service/dummy_keys
       - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
-      - /tmp:/home/export-file-service/export_files
+      - ~/Documents/export_files:/home/export-file-service/export_files
 
   supporttool:
     container_name: supporttool
