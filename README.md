@@ -61,7 +61,7 @@ make up
 ## Slowstart
 
 There are 2 docker-compose files in this repository:
-- dev.yml - spins up the core development containers such as postgres, rabbit and sftp
+- dev.yml - spins up the core development containers such as postgres
 - rm-services.yml - spins up the Java and Go services such as survey service and action service
 
 These can be run together as per the Quickstart section or individually.  Additionally individual services can be specified at the end of the command. For example:

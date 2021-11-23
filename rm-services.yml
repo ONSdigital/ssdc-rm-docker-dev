@@ -99,15 +99,9 @@ services:
     image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-export-file-service
     external_links:
       - pubsub-emulator
-      - sftp
     environment:
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
-      - SFTP_HOST=sftp
-      - SFTP_PORT=22
-      - SFTP_USERNAME=centos
-      - SFTP_KEY_FILENAME=/home/export-file-service/dummy_keys/dummy_rsa
-      - SFTP_PASSPHRASE=dummy_secret
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
       - DESTINATION_CONFIG_JSON_PATH=/home/export-file-service/dummy_destination_config.json
@@ -117,6 +111,9 @@ services:
       - DB_USERNAME=${POSTGRES_USERNAME}
       - DB_PASSWORD=${POSTGRES_PASSWORD}
       - DB_DATABASE=${POSTGRES_DATABASE}
+      - FILE_UPLOAD_DESTINATION=/home/export-file-service/export_files
+      - FILE_UPLOAD_MODE=LOCAL
+
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
@@ -127,7 +124,7 @@ services:
     volumes:
       - ./dummy_keys:/home/export-file-service/dummy_keys
       - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
-
+      - ~/Documents/export_files:/home/export-file-service/export_files
 
   supporttool:
     container_name: supporttool

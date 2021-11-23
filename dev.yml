@@ -7,17 +7,6 @@ services:
     ports:
       - "${EX_POSTGRES_PORT}:5432"
 
-  sftp:
-    container_name: sftp
-    image: atmoz/sftp
-    volumes:
-      - ~/Documents/sftp/supplier_A/print_services/:/home/centos/supplier_A/print_services/
-      - ~/Documents/sftp/supplier_B/print_services/:/home/centos/supplier_B/print_services/
-      - ./dummy_keys/dummy_rsa.pub:/home/centos/.ssh/keys/dummy_rsa.pub:ro
-    ports:
-      - "${EX_SFTP_PORT}:22"
-    command: centos::2000
-
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
