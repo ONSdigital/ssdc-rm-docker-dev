@@ -191,6 +191,9 @@ checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "${MVN_INS
 #Exception Manger
 checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
 
+# Job Processor
+checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME "make build" "make build_no_test"
+
 ########################################################################################################################
 #  Set up Docker Dev
 ########################################################################################################################
