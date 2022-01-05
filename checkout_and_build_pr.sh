@@ -53,6 +53,18 @@ function checkout_repo_branch() {
 function checkout_and_build_repo_branch() {
     REPO_NAME=$1
     BRANCH_NAME_TO_CHECKOUT=$2
+
+    MAKE_BUILD='make build'
+    MAKE_BUILD_NO_TEST='make build-no-test'
+
+    checkout_and_build_repo_branch_with_bespoke_commands $REPO_NAME $BRANCH_NAME_TO_CHECKOUT "${MAKE_BUILD}" "${MAKE_BUILD_NO_TEST}"
+
+    popd
+}
+
+checkout_and_build_repo_branch_with_bespoke_commands() {
+    REPO_NAME=$1
+    BRANCH_NAME_TO_CHECKOUT=$2
     RUN_TESTS_CMD=$3
     SKIP_TESTS_CMD=$4
 
@@ -60,10 +72,10 @@ function checkout_and_build_repo_branch() {
 
     if [ "$SKIP_TESTS" = true ] ; then
         echo "${REPO_NAME} Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
-        execute_and_record_command "${SKIP_TESTS_CMD}" true        
+        execute_and_record_command "${SKIP_TESTS_CMD}" true
     else
         echo "${REPO_NAME} Running Tests: Running CMD: ${RUN_TESTS_CMD}"
-        execute_and_record_command "${RUN_TESTS_CMD}" true  
+        execute_and_record_command "${RUN_TESTS_CMD}" true
     fi
 
     popd
@@ -165,34 +177,34 @@ MVN_INSTALL_ONLY_CMD="mvn clean install -Dmaven.test.skip=true -DdockerCompose.s
 checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
 
 # Install DDL
-checkout_and_build_repo_branch "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
+checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
 
 # Case Processor
-checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME
 
 # Case API
-checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME
 
 # Notify Service
-checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME
 
 # Export File Service
-checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME "make build_and_test" "make docker_build"
+checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-export-file-service" $BRANCH_NAME 'make build' "make docker-build"
 
 # Support Tool
-checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME
 
 # ROPS
-checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME
 
 #Qid Service
-checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME
 
 #Exception Manger
-checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME
 
 # Job Processor
-checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME "make build" "make build_no_test"
+checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME
 
 ########################################################################################################################
 #  Set up Docker Dev
