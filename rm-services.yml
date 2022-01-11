@@ -171,6 +171,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - DUMMYUSERIDENTITY=${DUMMY_USER}
+      - DUMMYUSERIDENTITY-ALLOWED=true
       - EXPORTFILEDESTINATIONCONFIGFILE=/home/response-operations/dummy_destination_config.json
     restart: always
     healthcheck:
