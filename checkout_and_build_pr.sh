@@ -189,7 +189,7 @@ checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME
 checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME
 
 # Export File Service
-checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-export-file-service" $BRANCH_NAME 'make build' "make docker-build"
+checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME
 
 # Support Tool
 checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME

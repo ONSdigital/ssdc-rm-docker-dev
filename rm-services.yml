@@ -2,7 +2,7 @@ version: "3.4"
 services:
   caseprocessor:
     container_name: caseprocessor
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-caseprocessor
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-caseprocessor
     external_links:
       - postgres
       - uacqid
@@ -32,7 +32,7 @@ services:
 
   caseapi:
     container_name: caseapi
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-case-api
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-case-api
     ports:
       - "${CASE_API_PORT}:8161"
     external_links:
@@ -57,7 +57,7 @@ services:
 
   uacqid:
     container_name: uacqid
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-uac-qid-service
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-uac-qid-service
     ports:
       - "${UAC_PORT}:8164"
     external_links:
@@ -78,7 +78,7 @@ services:
 
   exceptionmanager:
     container_name: exceptionmanager
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-exception-manager
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-exception-manager
     ports:
       - "${EXCEPTIONMANAGER_PORT}:8666"
     restart: always
@@ -96,7 +96,7 @@ services:
 
   exportfileservice:
     container_name: exportfileservice
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-export-file-service
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-export-file-service
     external_links:
       - pubsub-emulator
     environment:
@@ -128,7 +128,7 @@ services:
 
   supporttool:
     container_name: supporttool
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-support-tool
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-support-tool
     ports:
       - "9999:9999"
     external_links:
@@ -161,7 +161,7 @@ services:
 
   rops:
     container_name: rops
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-response-operations
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-response-operations
     ports:
       - "${ROPS_PORT}:7777"
     external_links:
@@ -185,7 +185,7 @@ services:
 
   notifyservice:
     container_name: notifyservice
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-notify-service
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-service
     ports:
       - "${NOTIFY_SERVICE_PORT}:8162"
     external_links:
@@ -212,7 +212,7 @@ services:
 
   jobprocessor:
     container_name: jobprocessor
-    image: eu.gcr.io/ssdc-rm-ci/rm/ssdc-rm-job-processor
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-job-processor
     external_links:
       - pubsub-emulator
       - postgres

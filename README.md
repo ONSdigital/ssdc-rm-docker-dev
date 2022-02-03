@@ -6,7 +6,7 @@ The goal of this repository is to enable team members to stand up a dockerized l
 
 1. You can access the google cloud docker registry
 1. Ask to become a team member of sdcplatform
-1. Run `gcloud auth configure-docker` to associate your docker with the GCR registry
+1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev` to associate your docker with the GCR registry
 1. Run `docker network create ssdcrmdockerdev_default` to create the docker network
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
 
@@ -83,13 +83,10 @@ This will spin up just the collection exercise service.
 ### Running in docker with local changes
 Development using this repo can be done by doing the following:
 
-1. Make changes to whichever repository.  In this example we'll suppose you're changing the collection-instrument repository.
-1. Stop the service with `docker stop collection-instrument`
-1. Delete the image with `docker rm collection-instrument`
+1. Move to the repository directory and make the code changes in the service repository locally
 1. Rebuild the image and tag it as the latest to 'trick' the build into thinking we already have the latest and don't need to pull down the image from dockerhub.
-    1. Python repo - `docker build . -t eu.gcr.io/census-catd-ci/rm/collection-instrument:latest`
-    1. Java repo - `mvn clean install` will automatically rebuild the docker image
-1. Finally, start the service again with `make up`
+    - `make build-no-test`
+1. Finally, return to the docker-dev repository and restart the service with `make up`. You should see the image you have rebuilt get recreated.
 
 ### Running natively with local changes
 1. Ensure you have all your services running with `make up`
