@@ -2,18 +2,18 @@ DOT := $(shell command -v dot 2> /dev/null)
 
 up:
 	docker network inspect ssdcrmdockerdev_default >/dev/null || docker network create ssdcrmdockerdev_default
-	docker-compose -f dev.yml -f rm-services.yml up -d ${SERVICE} ;
+	docker compose -f dev.yml -f rm-services.yml up -d ${SERVICE} ;
 	pipenv install --dev
 	./setup_pubsub.sh
 	
 down:
-	docker-compose -f dev.yml -f rm-services.yml down
+	docker compose -f dev.yml -f rm-services.yml down
 
 pull:
-	docker-compose -f dev.yml -f rm-services.yml pull ${SERVICE}
+	docker compose -f dev.yml -f rm-services.yml pull ${SERVICE}
 
 logs:
-	docker-compose -f dev.yml -f rm-services.yml logs --follow ${SERVICE}
+	docker compose -f dev.yml -f rm-services.yml logs --follow ${SERVICE}
 
 clean:
 	rm -f plantuml.jar; rm -f diagrams/*.svg
