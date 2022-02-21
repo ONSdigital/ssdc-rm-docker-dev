@@ -233,7 +233,7 @@ services:
 
 networks:
   default:
-    external:
-      name: ssdcrmdockerdev_default
+    external: true
+    name: ssdcrmdockerdev_default
 volumes:
   dummy_keys:
