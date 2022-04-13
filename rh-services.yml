@@ -1,0 +1,41 @@
+version: "3.4"
+services:
+  rh-service:
+    container_name: rh-service
+    image: europe-west2-docker.pkg.dev/ons-ci-int/int-docker-release/rh-service:latest
+    ports:
+    - "${RH_SERVICE_PORT}:8071"
+    environment:
+    - GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/google-credentials.json
+    - GOOGLE_CLOUD_PROJECT=dummy-local
+    - spring.profiles.active=dev
+    - spring.cloud.gcp.pubsub.emulator-host=pubsub-emulator:8538
+    - rate-limiter.rest-client-config.host=host.docker.internal
+    - spring.cloud.gcp.pubsub.project-id=shared-project
+    - FIRESTORE_EMULATOR_HOST=firestore-emulator:8540
+    volumes:
+      - type: bind
+        source: ./fake-service-account.json
+        target: /gcp/config/google-credentials.json
+
+  rh-ui:
+    container_name: rh-ui
+    image: europe-west2-docker.pkg.dev/ons-ci-int/int-docker-release/rh-ui:latest
+    depends_on:
+      - redis
+    environment:
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379
+      - APP_SETTINGS=DevelopmentConfig
+      - PORT=9092
+      - ADDRESS_INDEX_SVC_URL=http://host.docker.internal:8163
+      - ADDRESS_INDEX_SVC_EXTERNAL_URL=http://host.docker.internal:8163
+      - RHSVC_URL=http://host.docker.internal:8071
+    ports:
+      - "${RH_UI_PORT}:9092"
+
+networks:
+  default:
+    external: true
+    name: ssdcrmdockerdev_default
+
