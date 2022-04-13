@@ -19,9 +19,11 @@ rmrh-up:
 	./setup_pubsub.sh
 	
 rm-down:
+	@echo "IF RH IS RUNNING, THIS WILL STOP PUBUSB EMULATOR FOR THOSE SERVICES TOO"
 	docker compose -f dev.yml -f rm-services.yml down
 
 rh-down:
+	@echo "IF RM IS RUNNING, THIS WILL STOP PUBUSB EMULATOR FOR THOSE SERVICES TOO"
 	docker compose -f rh-dev.yml -f rh-services.yml down
 
 rmrh-down:
