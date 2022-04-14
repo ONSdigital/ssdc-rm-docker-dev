@@ -1,6 +1,6 @@
 # Stand up a local SSDC RM App Environment
 
-The goal of this repository is to enable team members to stand up a dockerized local census application using **docker
+The goal of this repository is to enable team members to stand up a dockerized local RM and RH application using **docker
 compose** and **docker network**.
 
 ## Pre-requisites
@@ -65,16 +65,19 @@ make up
 
 ## Slowstart
 
-There are 2 docker-compose files in this repository:
+There are 5 docker-compose files in this repository:
 
-- dev.yml - spins up the core development containers such as postgres
+- rm-dependencies.yml - spins up the RM core development containers such as postgres
 - rm-services.yml - spins up the Java and Go services such as survey service and action service
+- rh-dependencies.yml - spins up the RH core development containers such as redis
+- rh-services.yml - spins up the RH UI and service containers
+- common-dependencies.yml - spins up the core development containers shared between RH and RM such as the pubsub-emulator
 
 These can be run together as per the Quickstart section or individually. Additionally individual services can be
 specified at the end of the command. For example:
 
 ```
-docker-compose -f dev.yml -f rm-services.yml up -d
+docker-compose -f rm-dependencies.yml -f rm-services.yml up -d
 ```
 
 This will spin up the development containers and the rm-services.
