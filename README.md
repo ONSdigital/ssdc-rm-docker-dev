@@ -92,14 +92,14 @@ The makefile contains targets that can start and stop eithr the RM services, RH 
 
 | Make target   | Result                          |
 |---------------|---------------------------------|
-| rmrh-_target_ | Affects both RH and RM services |
+| _target_ | Affects both RH and RM services |
 | rm-_target_   | Only affects RM services        |
 | rh-_target_   | Only affects RH services        |
+ | common-_target_| Only affects common services* | 
+
+*The common services are currently only the pubsub emulator and the only target is _down_. 
 
 e.g. `make rm-up` to start the RM services.
-
-**Note**
-If you are running both the RM and RH services, and you stop one of them using their `make` target, then the pubsub-emulator will stop so this will need to be brought up again.
 
 ### Running in docker with local changes
 
