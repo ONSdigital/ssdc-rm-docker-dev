@@ -1,11 +1,5 @@
 version: "3.4"
 services:
-  pubsub-emulator:
-    container_name: pubsub-emulator
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-pubsub-emulator:latest
-    ports:
-      - "8538:8538"
-
   redis:
     container_name: redis
     image: redis
