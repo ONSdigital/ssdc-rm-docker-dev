@@ -16,10 +16,10 @@ Important is to configure your python environment - that's covered next.
 
 ## Configure Local Python Environments to Run Acceptance Tests
 
-#### Currently Supported Python Version is 3.6.10 and Machine Version is 3.7.7
+#### Currently Supported Python Version is 3.9.x
 
 The goal is to setup our python environments ready to run Python 3.X.X (whaterver is currently supported). It is good
-practise to keep your machine version in line with the latest (today it is 3.P.Q).
+practise to keep your machine version in line with the latest.
 
 Validate your python versions with **`python -V`** and printenv.
 
@@ -32,7 +32,7 @@ eval "$(pyenv init -)"
 
 - **`pyenv --version`**      # check whether pyenv is installed
 - **`brew install pyenv`**   # install pyenv with brew
-- **`pyenv install 3.X.Y`**  # the app needs python 3.6
+- **`pyenv install 3.X.Y`**  # the app needs python 3.9
 - **`pyenv local 3.x.y`**    # whenever you come to this directory this python will be used
 
 pyenv local will create a **.python-version** file so that whenever you return to the directory your python env is set.
