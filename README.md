@@ -92,7 +92,7 @@ This will spin up just the collection exercise service.
 
 ## Development
 
-Both RM and RH services can be started and stopped. The makefile contains targets that can start and stop eithr the RM
+Both RM and RH services can be started and stopped. The makefile contains targets that can start and stop either the RM
 services, RH services or both using:
 
 | Make target     | Result                          |
