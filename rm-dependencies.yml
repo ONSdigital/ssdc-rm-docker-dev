@@ -18,12 +18,6 @@ services:
     links:
       - ons-postgres:postgres
 
-  pubsub-emulator:
-    container_name: pubsub-emulator
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-pubsub-emulator:latest
-    ports:
-      - "8538:8538"
-
   notifystub:
     container_name: notifystub
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-stub:latest
