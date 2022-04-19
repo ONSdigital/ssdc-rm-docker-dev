@@ -58,15 +58,20 @@ curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/e
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/topics/event_case-update
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_case-update_rh -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_case-update"}'
+curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_case-update_rh_at -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_case-update"}'
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/topics/event_uac-update
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_uac-update_rh -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_uac-update"}'
+curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_uac-update_rh_at -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_uac-update"}'
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/topics/event_survey-update
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_survey-update_rh -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_survey-update"}'
+curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_survey-update_rh_at -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_survey-update"}'
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/topics/event_collection-exercise-update
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_collection-exercise-update_rh -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_collection-exercise-update"}'
+curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/shared-project/subscriptions/event_collection-exercise-update_rh_at -H 'Content-Type: application/json' -d '{"topic": "projects/shared-project/topics/event_collection-exercise-update"}'
+
 
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/ras-rm-project/topics/case-notification
 curl -X PUT http://$PUBSUB_SETUP_HOST/v1/projects/ras-rm-project/subscriptions/case-notification_testing -H 'Content-Type: application/json' -d '{"topic": "projects/ras-rm-project/topics/case-notification"}'
