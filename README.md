@@ -1,6 +1,7 @@
 # Stand up a local SSDC RM App Environment
 
-The goal of this repository is to enable team members to stand up a dockerized local RM and RH application using **docker
+The goal of this repository is to enable team members to stand up a dockerized local RM and RH application using **
+docker
 compose** and **docker network**.
 
 ## Pre-requisites
@@ -34,7 +35,7 @@ eval "$(pyenv init -)"
 - **`pyenv install 3.X.Y`**  # the app needs python 3.6
 - **`pyenv local 3.x.y`**    # whenever you come to this directory this python will be used
 
-pyenv loal will create a **.python-version** file so that whenever you return to the directory your python env is set.
+pyenv local will create a **.python-version** file so that whenever you return to the directory your python env is set.
 Note that this has been put into `.gitignore`
 
 ## PipEnv | Upgrading Python | Projects with a Pip File
@@ -71,7 +72,8 @@ There are 5 docker-compose files in this repository:
 - rm-services.yml - spins up the Java and Go services such as survey service and action service
 - rh-dependencies.yml - spins up the RH core development containers such as redis
 - rh-services.yml - spins up the RH UI and service containers
-- common-dependencies.yml - spins up the core development containers shared between RH and RM such as the pubsub-emulator
+- common-dependencies.yml - spins up the core development containers shared between RH and RM such as the
+  pubsub-emulator
 
 These can be run together as per the Quickstart section or individually. Additionally individual services can be
 specified at the end of the command. For example:
@@ -90,17 +92,17 @@ This will spin up just the collection exercise service.
 
 ## Development
 
-Both RM and RH services can be started and stopped.
-The makefile contains targets that can start and stop eithr the RM services, RH services or both using:
+Both RM and RH services can be started and stopped. The makefile contains targets that can start and stop eithr the RM
+services, RH services or both using:
 
-| Make target   | Result                          |
-|---------------|---------------------------------|
-| _target_ | Affects both RH and RM services |
-| rm-_target_   | Only affects RM services        |
-| rh-_target_   | Only affects RH services        |
- | common-_target_| Only affects common services* | 
+| Make target     | Result                          |
+|-----------------|---------------------------------|
+| _target_        | Affects both RH and RM services |
+| rm-_target_     | Only affects RM services        |
+| rh-_target_     | Only affects RH services        |
+| common-_target_ | Only affects common services*   | 
 
-*The common services are currently only the pubsub emulator and the only target is _down_. 
+*The common services are currently only the pubsub emulator and the only target is _down_.
 
 e.g. `make rm-up` to start the RM services.
 
@@ -119,7 +121,6 @@ Development using this repo can be done by doing the following:
 
 1. Ensure you have all your services running with `make up`
 1. Stop the service you're changing with `docker stop service`
-1. Delete the image with `docker rm service`
 1. Make changes to whichever repository.
 1. Depending on the repository, run it from either the command line using the appropriate command (e.g. for a python
    flask app: `flask run`) or by pressing run in your IDE.
@@ -198,15 +199,27 @@ preferences', then go to the 'advanced' tab. The default memory allocated to Doc
 the number of cores to 4 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
 just what worked for people.
 
-## Publishing to Pub/Sub Topics in Emulator
+## Pubsub Tools
+
+Some tooling scripts are provided for easy interaction with the pubsub emulator
+
+### Prerequisites
+
+Install and/or update dependencies with
+
+```shell
+make install
+```
+
+### Publishing to Pub/Sub Topics in Emulator
 
 Run `./publish_message.sh <TOPIC> <PROJECT>` and then paste in a JSON message. Press CTRL-D when you're done.
 
-## Pulling from Pub/Sub Subscriptions in Emulator
+### Pulling from Pub/Sub Subscriptions in Emulator
 
 Run `./get_message.sh <SUBSCRIPTION> <PROJECT>`.
 
-## Purging Messages on a Pub/Sub Subscriptions in Emulator
+### Purging Messages on a Pub/Sub Subscriptions in Emulator
 
 Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
 
