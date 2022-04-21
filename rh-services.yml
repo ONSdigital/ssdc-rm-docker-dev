@@ -17,6 +17,12 @@ services:
       - type: bind
         source: ./fake-service-account.json
         target: /gcp/config/google-credentials.json
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8071/info" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
 
   rh-ui:
     container_name: rh-ui
@@ -33,6 +39,12 @@ services:
       - RHSVC_URL=http://host.docker.internal:8071
     ports:
       - "${RH_UI_PORT}:9092"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9092/info" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
 
 networks:
   default:
