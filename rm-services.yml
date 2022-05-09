@@ -2,7 +2,7 @@ version: "3.4"
 services:
   caseprocessor:
     container_name: caseprocessor
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-caseprocessor
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-caseprocessor:3267-get-a-rough-version-of-lifecycle-stuff-working
     external_links:
       - postgres
       - uacqid
@@ -32,7 +32,7 @@ services:
 
   caseapi:
     container_name: caseapi
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-case-api
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-case-api:3267-get-a-rough-version-of-lifecycle-stuff-working
     ports:
       - "${CASE_API_PORT}:8161"
     external_links:
@@ -128,7 +128,7 @@ services:
 
   supporttool:
     container_name: supporttool
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-support-tool
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-support-tool:3267-get-a-rough-version-of-lifecycle-stuff-working
     ports:
       - "9999:9999"
     external_links:
