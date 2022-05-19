@@ -40,7 +40,7 @@ services:
     ports:
       - "${RH_UI_PORT}:9092"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9092/info" ]
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
       interval: 5s
       timeout: 3s
       retries: 20
