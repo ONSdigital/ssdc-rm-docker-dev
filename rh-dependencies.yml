@@ -6,12 +6,6 @@ services:
     ports:
       - "6379:6379"
 
-  firestore-emulator:
-    container_name: firestore-emulator
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-firestore-emulator:latest
-    ports:
-      - "8542:8540"
-
   mock-service:
     container_name: mock-service
     image: europe-west2-docker.pkg.dev/ons-ci-int/int-docker-release/mock-service:latest

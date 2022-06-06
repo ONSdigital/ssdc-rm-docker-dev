@@ -3,7 +3,7 @@ services:
   ons-postgres:
     container_name: postgres
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-dev-common-postgres:latest
-    command: ["-c", "shared_buffers=256MB", "-c", "max_connections=500"]
+    command: [ "-c", "shared_buffers=256MB", "-c", "max_connections=500" ]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
 
@@ -23,6 +23,12 @@ services:
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-stub:latest
     ports:
       - "8917:5000"
+
+  firestore-emulator:
+    container_name: firestore-emulator
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-firestore-emulator:latest
+    ports:
+      - "8542:8540"
 
 networks:
   ssdcrmdockerdev_default:

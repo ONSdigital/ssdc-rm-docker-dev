@@ -231,6 +231,23 @@ services:
       retries: 10
       start_period: 45s
 
+  rh-service:
+    container_name: rh-service
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rh-service:latest
+    ports:
+      - "${RH_SERVICE_PORT}:8071"
+    environment:
+      - spring.profiles.active=dev
+      - spring.cloud.gcp.pubsub.emulator-host=pubsub-emulator:8538
+      - spring.cloud.gcp.pubsub.project-id=shared-project
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8540
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8071/info" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
 networks:
   default:
     external: true
