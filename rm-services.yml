@@ -237,12 +237,20 @@ services:
     ports:
       - "${RH_SERVICE_PORT}:8071"
     environment:
-      - spring.profiles.active=dev
       - spring.cloud.gcp.pubsub.emulator-host=pubsub-emulator:8538
       - spring.cloud.gcp.pubsub.project-id=shared-project
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:8540
+      - spring.cloud.gcp.firestore.project-id=our-project
+      - GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/google-credentials.json
+      - GOOGLE_CLOUD_PROJECT=dummy-local
+    volumes:
+      - type: bind
+        source: ./fake-service-account.json # The spring Firestore client requires google credentials, give it a dummy account locally
+        target: /gcp/config/google-credentials.json
+      - ./java_healthcheck:/opt/healthcheck
+    restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8071/info" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8071/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 20
