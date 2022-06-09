@@ -47,8 +47,10 @@ services:
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
     restart: always
+    volumes:
+      - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8161/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8161/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -68,8 +70,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
+    volumes:
+      - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8164/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8164/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -86,8 +90,10 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:${POSTGRES_PORT}/${POSTGRES_HOST}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8666/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8666/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -113,7 +119,6 @@ services:
       - DB_DATABASE=${POSTGRES_DATABASE}
       - FILE_UPLOAD_DESTINATION=/home/export-file-service/export_files
       - FILE_UPLOAD_MODE=LOCAL
-
     restart: always
     healthcheck:
       test: sh -c "[ -f /tmp/ready ]"
@@ -151,12 +156,13 @@ services:
       - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
     restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9999/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:9999/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
       start_period: 50s
     volumes:
+      - ./java_healthcheck:/opt/healthcheck/
       - ./dummy_destination_config.json:/home/supporttool/dummy_destination_config.json
 
   rops:
@@ -175,12 +181,13 @@ services:
       - EXPORTFILEDESTINATIONCONFIGFILE=/home/response-operations/dummy_destination_config.json
     restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:7777/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:7777/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
       start_period: 50s
     volumes:
+      - ./java_healthcheck:/opt/healthcheck/
       - ./dummy_destination_config.json:/home/response-operations/dummy_destination_config.json
 
   notifyservice:
@@ -203,8 +210,10 @@ services:
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
       - NOTIFY_BASEURL=${NOTIFY_STUB_BASEURL}
     restart: always
+    volumes:
+      - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8162/actuator/health" ]
+      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8162/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
