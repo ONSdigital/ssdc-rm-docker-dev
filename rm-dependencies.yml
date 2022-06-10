@@ -2,7 +2,7 @@ version: "3.4"
 services:
   ons-postgres:
     container_name: postgres
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-dev-common-postgres:latest
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-dev-common-postgres:3267-get-a-rough-version-of-lifecycle-stuff-working
     command: ["-c", "shared_buffers=256MB", "-c", "max_connections=500"]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
