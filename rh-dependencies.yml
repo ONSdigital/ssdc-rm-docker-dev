@@ -12,12 +12,6 @@ services:
     ports:
       - "8163:8162"
 
-  mock-envoy:
-    container_name: mock-envoy
-    image: europe-west2-docker.pkg.dev/ons-ci-int/int-docker-release/mock-envoy:latest
-    ports:
-      - "8181:8181"
-
 networks:
   ssdcrmdockerdev_default:
     external: true
