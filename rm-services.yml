@@ -267,6 +267,28 @@ services:
       retries: 20
       start_period: 5s
 
+  rh-ui:
+    container_name: rh-ui
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/rh-ui
+    depends_on:
+      - redis
+    environment:
+      - REDIS_SERVER=redis
+      - REDIS_PORT=6379
+      - APP_SETTINGS=DevelopmentConfig
+      - PORT=9092
+      - ADDRESS_INDEX_SVC_URL=http://host.docker.internal:8163
+      - ADDRESS_INDEX_SVC_EXTERNAL_URL=http://host.docker.internal:8163
+      - RHSVC_URL=http://host.docker.internal:8071
+    ports:
+      - "${RH_UI_PORT}:9092"
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
 networks:
   default:
     external: true
