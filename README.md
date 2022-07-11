@@ -1,8 +1,7 @@
 # Stand up a local SSDC RM App Environment
 
-The goal of this repository is to enable team members to stand up a dockerized local RM and RH application using **
-docker
-compose** and **docker network**.
+The goal of this repository is to enable team members to stand up a dockerized local RM and RH application
+using **docker compose** and **docker network**.
 
 ## Pre-requisites
 
@@ -13,6 +12,23 @@ compose** and **docker network**.
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
 
 Important is to configure your python environment - that's covered next.
+
+## Quickstart
+
+![make up](https://media.giphy.com/media/xULW8lyhMJjzyO33sA/giphy.gif)
+
+```shell
+make up
+```
+
+Will spin up all the dependencies and services.
+
+### Updating Images
+To force pull the latest images use
+
+```shell
+make pull
+```
 
 ## Configure Local Python Environments to Run Acceptance Tests
 
@@ -56,78 +72,56 @@ Use [Pyenv](https://github.com/pyenv/pyenv) to manage installed Python versions
 pip install -U pipenv
 ```
 
-## Quickstart
-
-![make up](https://media.giphy.com/media/xULW8lyhMJjzyO33sA/giphy.gif)
-
-```
-make up
-```
-
 ## Slowstart
 
-There are 5 docker-compose files in this repository:
+There are two docker-compose files:
 
-- rm-dependencies.yml - spins up the RM core development containers such as postgres
-- rm-services.yml - spins up the Java and Go services such as survey service and action service
-- rh-dependencies.yml - spins up the RH core development containers such as redis
-- rh-services.yml - spins up the RH UI and service containers
-- common-dependencies.yml - spins up the core development containers shared between RH and RM such as the
-  pubsub-emulator
+- rm-dependencies.yml - spins up the backing service containers such as postgres and pubsub emulator
+- rm-services.yml - spins up the RM and RH services such as case-processor and rh-ui
 
-These can be run together as per the Quickstart section or individually. Additionally individual services can be
-specified at the end of the command. For example:
+These can be run together as per the Quickstart section or individually.
 
 ```
-docker-compose -f rm-dependencies.yml -f rm-services.yml up -d
+docker compose -f rm-dependencies.yml -f rm-services.yml up -d
 ```
 
 This will spin up the development containers and the rm-services.
 
+Additionally, individual services can be specified at the end of the command. For example:
+
 ```
-docker-compose -f rm-services.yml up -d collex
+docker compose -f rm-services.yml up -d caseprocessor
 ```
 
-This will spin up just the collection exercise service.
+This will spin up just the Case Processor container, however be aware that individual services may not function
+correctly or even start up at all without their dependencies and integrations.
+
+If you're spinning things up manually, you will also need to manually run the `setup_pubsub.sh` script to create the
+required topics and subscriptions in the PubSub Emulator.
 
 ## Development
-
-Both RM and RH services can be started and stopped. The makefile contains targets that can start and stop either the RM
-services, RH services or both using:
-
-| Make target     | Result                          |
-|-----------------|---------------------------------|
-| _target_        | Affects both RH and RM services |
-| rm-_target_     | Only affects RM services        |
-| rh-_target_     | Only affects RH services        |
-| common-_target_ | Only affects common services*   | 
-
-*The common services are currently only the pubsub emulator and the only target is _down_.
-
-e.g. `make rm-up` to start the RM services.
 
 ### Running in docker with local changes
 
 Development using this repo can be done by doing the following:
 
 1. Move to the repository directory and make the code changes in the service repository locally
-1. Rebuild the image and tag it as the latest to 'trick' the build into thinking we already have the latest and don't
-   need to pull down the image from dockerhub.
-    - `make build-no-test`
-1. Finally, return to the docker-dev repository and restart the service with `make rm-up`. You should see the image you
+1. Rebuild the image to overwrite your local `latest` image with your changes, for example using `make build-no-test`,
+   but check the README in the repository for specific build commands.
+1. Finally, return to the docker-dev repository and restart the service with `make up`. You should see the image you
    have rebuilt get recreated.
 
 ### Running natively with local changes
 
 1. Ensure you have all your services running with `make up`
-1. Stop the service you're changing with `docker stop service`
+1. Stop the service you're changing with `docker stop <service>`, e.g. `docker stop caseprocessor`
 1. Make changes to whichever repository.
 1. Depending on the repository, run it from either the command line using the appropriate command (e.g. for a python
    flask app: `flask run`) or by pressing run in your IDE.
 
 ### pgAdmin 4
 
-1. Start all the services `make rm-up`
+1. Start all the services `make up`
 2. Navigate to `localhost:80` in your browser
 3. Login with `ons@ons.gov` / `secret`
 4. Object -> Create -> Server...
@@ -154,7 +148,7 @@ make: *** [pull] Error 1
 
 ### Database already running
 
-- `sm-postgres` container not working? Check there isn't a local postgres running on your system as it uses port 5432
+- `postgres` container not working? Check there isn't a local postgres running on your system as it uses port 5432
   and won't start if another service is running on this port.
 
 ### Port already bound to
@@ -198,6 +192,22 @@ When rm is all running it takes a lot of memory. Click on the docker icon in the
 preferences', then go to the 'advanced' tab. The default memory allocated to Docker is 2gb. Bumping that up to 8gb and
 the number of cores to 4 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
 just what worked for people.
+
+### Containers failing to write to disk?
+
+#### Or Docker using too much disk space in general?
+
+Over time, images and volumes can accumulate and consume too much disk storage space. If this reaches Docker's storage
+limit then it will cause failures when running our services, as containers will be denied disk writes, as well as
+failing image pulls.
+Most of this space is normally consumed by "dangling" or unused images and volumes, these can be automatically cleaned
+up with the `prune` tool.
+
+To automatically clean up containers, images, and volumes try running
+
+```shell
+docker system prune --volumes
+```
 
 ## Pubsub Tools
 
