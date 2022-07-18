@@ -254,6 +254,7 @@ services:
       - GOOGLE_CLOUD_PROJECT=dummy-local
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+      - EQ_RESPONSE-ID-PEPPER=pa55w0rd123
     volumes:
       - type: bind
         source: ./fake-service-account.json # The spring Firestore client requires google credentials, give it a dummy account locally
