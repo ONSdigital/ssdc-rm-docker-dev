@@ -254,11 +254,14 @@ services:
       - GOOGLE_CLOUD_PROJECT=dummy-local
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
+      - EQ_RESPONSE-ID-PEPPER=TABASCO_SAUCE
+      - JWT_KEYS=/home/rh-service/keys/eq-keys.json
     volumes:
       - type: bind
         source: ./fake-service-account.json # The spring Firestore client requires google credentials, give it a dummy account locally
         target: /gcp/config/google-credentials.json
       - ./java_healthcheck:/opt/healthcheck
+      - ./dummy_keys:/home/rh-service/keys
     restart: always
     healthcheck:
       test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8071/actuator/health" ]
