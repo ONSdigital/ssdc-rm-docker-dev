@@ -24,6 +24,7 @@ make up
 Will spin up all the dependencies and services.
 
 ### Updating Images
+
 To force pull the latest images use
 
 ```shell
@@ -174,6 +175,17 @@ make: *** [up] Error 1
 - Run `docker network create censusrmdockerdev_default` to create the docker network.
 
 **NB:** Docker compose may warn you that the network is unused. This is a lie, it is in use.
+
+### Java Healthcheck
+
+Since docker compose health checks are run inside the container, we need a method of checking service health that can
+run in our minimal alpine java JRE images. To accomplish this, we have a small Java healthcheck which simply calls a
+http endpoint and succeeds if it gets a success status. This is compiled into a JAR, which is then mounted into the
+containers, so it can be called at runtime.
+
+#### Making Changes
+If you make changes to the [HealthCheck.java](java_healthcheck/HealthCheck.java), you must then
+run `make regen-java-healthcheck` in order to compile and package the updated class into the jar.
 
 ### Unexpected behavior
 

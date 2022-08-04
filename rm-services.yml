@@ -50,7 +50,7 @@ services:
     volumes:
       - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8161/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8161/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -73,7 +73,7 @@ services:
     volumes:
       - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8164/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8164/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -93,7 +93,7 @@ services:
     volumes:
       - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8666/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8666/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -156,7 +156,7 @@ services:
       - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
     restart: always
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:9999/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:9999/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -181,7 +181,7 @@ services:
       - EXPORTFILEDESTINATIONCONFIGFILE=/home/response-operations/dummy_destination_config.json
     restart: always
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:7777/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:7777/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -213,7 +213,7 @@ services:
     volumes:
       - ./java_healthcheck:/opt/healthcheck/
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8162/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8162/actuator/health" ]
       interval: 60s
       timeout: 10s
       retries: 4
@@ -264,7 +264,7 @@ services:
       - ./dummy_keys:/home/rh-service/keys
     restart: always
     healthcheck:
-      test: [ "CMD", "java", "/opt/healthcheck/HealthCheck.java", "http://localhost:8071/actuator/health" ]
+      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8071/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 20

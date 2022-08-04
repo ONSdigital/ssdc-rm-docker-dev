@@ -19,3 +19,6 @@ pull:
 
 logs:
 	docker compose -f rm-dependencies.yml -f rm-services.yml logs --follow ${SERVICE}
+
+regen-java-healthcheck:
+	$(MAKE) -C java_healthcheck regen-java-healthcheck
