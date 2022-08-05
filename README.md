@@ -179,7 +179,7 @@ make: *** [up] Error 1
 
 1. Stop docker containers `make down`
 1. Remove containers `docker rm $(docker ps -aq)`
-1. Delete images `docker rmi $(docker images -qa)`
+1. Delete images `docker rmi $(docker images europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/* -qa)`
 1. Pull and run containers `make up`
 
 ### Service not up?
