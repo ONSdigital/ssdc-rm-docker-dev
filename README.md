@@ -185,7 +185,7 @@ containers, so it can be called at runtime.
 
 #### Making Changes
 If you make changes to the [HealthCheck.java](java_healthcheck/HealthCheck.java), you must then
-run `make regen-java-healthcheck` in order to compile and package the updated class into the jar.
+run `make rebuild-java-healthcheck` in order to compile and package the updated class into the jar.
 
 ### Unexpected behavior
 
