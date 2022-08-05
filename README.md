@@ -179,13 +179,14 @@ make: *** [up] Error 1
 ### Java Healthcheck
 
 Since docker compose health checks are run inside the container, we need a method of checking service health that can
-run in our minimal alpine java JRE images. To accomplish this, we have a small Java healthcheck which simply calls a
-http endpoint and succeeds if it gets a success status. This is compiled into a JAR, which is then mounted into the
-containers, so it can be called at runtime.
+run in our minimal alpine java JRE images. To accomplish this, we have a small Java health check class which simply
+calls a http endpoint and succeeds if it gets a success status. This is compiled into a JAR, which is then mounted into
+the containers, so it can be executed by the JRE at container runtime.
 
 #### Making Changes
+
 If you make changes to the [HealthCheck.java](java_healthcheck/HealthCheck.java), you must then
-run `make rebuild-java-healthcheck` in order to compile and package the updated class into the jar.
+run `make rebuild-java-healthcheck` to compile and package the updated class into the jar.
 
 ### Unexpected behavior
 
