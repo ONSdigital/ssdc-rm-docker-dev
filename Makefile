@@ -19,3 +19,6 @@ pull:
 
 logs:
 	docker compose -f rm-dependencies.yml -f rm-services.yml logs --follow ${SERVICE}
+
+rebuild-java-healthcheck:
+	$(MAKE) -C java_healthcheck rebuild-java-healthcheck
