@@ -40,11 +40,29 @@ create_subscription() {
   fi
   echo -n "."
 }
+create_subscription_with_push_config() {
+  # Expects three arguments: project name, topic name, and subscription name
+  HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\", \"pushConfig\":{\"pushEndpoint\":\"http://sdx-receipt-adapter:8080/projects/$1/topics/$2\" }}")
+  ERROR=$(check_curl_response "$HTTP_RESPONSE")
+  if [ -n "$ERROR" ]; then
+    echo
+    echo "Error creating subscription:"
+    echo "  project: \"$1\", topic: \"$2\", subscription: \"$3\""
+    echo "  $ERROR"
+    return 1
+  fi
+  echo -n "."
+}
 
 create_topic_and_subscription() {
   # Expects three arguments: project name, topic name, and subscription name
   create_topic "$1" "$2"
   create_subscription "$1" "$2" "$3"
+}
+create_topic_and_subscription_with_push_config() {
+  # Expects three arguments: project name, topic name, and subscription name
+  create_topic "$1" "$2"
+  create_subscription_with_push_config "$1" "$2" "$3"
 }
 
 # Wait for pubsub-emulator to come up
@@ -86,6 +104,7 @@ create_topic_and_subscription shared-project event_survey-update event_survey-up
 create_subscription shared-project event_survey-update event_survey-update_rh_at
 create_topic_and_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh
 create_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh_at
+create_topic_and_subscription_with_push_config shared-project event_sdx_receipt event_sdx-receipt_receipting-adapter
 
 
 # RASRM Topics
