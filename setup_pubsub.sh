@@ -47,8 +47,14 @@ create_subscription() {
   echo -n "."
 }
 
+#######################################
+# Expects four arguments: project name, topic name, subscription name and push config host
+# Project name: Mandatory
+# Topic name: Mandatory
+# Subscription name: Mandatory
+# Push Config Host: Optional, passed in via ./setup_pubsub.sh
+#######################################
 create_topic_and_subscription() {
-  # Expects four arguments: project name, topic name, subscription name and push config host
   create_topic "$1" "$2"
   create_subscription "$1" "$2" "$3" "$4"
 }
