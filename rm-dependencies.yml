@@ -40,7 +40,7 @@ services:
     container_name: sdx-receipt-adapter
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/sdx-receipt-adapter:latest
     ports:
-      - "8080:8080"
+      - "8100:8100"
     environment:
       - PROJECT_ID=shared-project
       - TOPIC_ID=event_receipt
@@ -48,7 +48,7 @@ services:
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
     volumes:
       - type: bind
-        source: ./fake-service-account.json # The spring Firestore client requires google credentials, give it a dummy account locally
+        source: ./fake-service-account.json # The pubsub client used by the sdx receipt adapter requires google credentials, give it a dummy account locally
         target: /gcp/config/google-credentials.json
 
 

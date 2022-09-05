@@ -34,7 +34,7 @@ create_subscription() {
     HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\"}");
   else
   # Expects four arguments: project name, topic name, subscription name and push config host
-    HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\", \"pushConfig\":{\"pushEndpoint\":\"http://$4:8080/projects/$1/topics/$2\" }}")
+    HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\", \"pushConfig\":{\"pushEndpoint\":\"http://$4:8100/projects/$1/topics/$2\" }}")
   ERROR=$(check_curl_response "$HTTP_RESPONSE")
   fi
   if [ -n "$ERROR" ]; then
@@ -48,7 +48,7 @@ create_subscription() {
 }
 
 create_topic_and_subscription() {
-  # Expects three arguments: project name, topic name, and subscription name
+  # Expects four arguments: project name, topic name, subscription name and push config host
   create_topic "$1" "$2"
   create_subscription "$1" "$2" "$3" "$4"
 }
