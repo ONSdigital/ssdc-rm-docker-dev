@@ -43,7 +43,8 @@ services:
       - "8100:8100"
     environment:
       - PROJECT_ID=shared-project
-      - TOPIC_ID=event_receipt
+      - RM_RECEIPT_TOPIC_ID=event_receipt
+      - PUBSUB_PUBLISH_CONFIRMATION_TIMEOUT=30
       - GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/google-credentials.json
       - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
     volumes:
