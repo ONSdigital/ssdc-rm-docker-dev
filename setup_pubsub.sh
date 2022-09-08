@@ -28,9 +28,15 @@ create_topic() {
 }
 
 create_subscription() {
+  # If statement to check if there needs to be a pushconfig set for a subscription
+  if [ -z "$4" ]; then
   # Expects three arguments: project name, topic name, and subscription name
-  HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\"}")
+    HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\"}");
+  else
+  # Expects four arguments: project name, topic name, subscription name and push config host
+    HTTP_RESPONSE=$(curl -s -w "HTTPSTATUS:%{http_code}" -X PUT "http://$PUBSUB_SETUP_HOST/v1/projects/$1/subscriptions/$3" -H "Content-Type: application/json" -d "{\"topic\": \"projects/$1/topics/$2\", \"pushConfig\":{\"pushEndpoint\":\"http://$4:8100/projects/$1/topics/$2\" }}")
   ERROR=$(check_curl_response "$HTTP_RESPONSE")
+  fi
   if [ -n "$ERROR" ]; then
     echo
     echo "Error creating subscription:"
@@ -41,10 +47,16 @@ create_subscription() {
   echo -n "."
 }
 
+#######################################
+# Expects four arguments: project name, topic name, subscription name and push config host
+# Project name: Mandatory
+# Topic name: Mandatory
+# Subscription name: Mandatory
+# Push Config Host: Optional, passed in via ./setup_pubsub.sh
+#######################################
 create_topic_and_subscription() {
-  # Expects three arguments: project name, topic name, and subscription name
   create_topic "$1" "$2"
-  create_subscription "$1" "$2" "$3"
+  create_subscription "$1" "$2" "$3" "$4"
 }
 
 # Wait for pubsub-emulator to come up
@@ -86,6 +98,7 @@ create_topic_and_subscription shared-project event_survey-update event_survey-up
 create_subscription shared-project event_survey-update event_survey-update_rh_at
 create_topic_and_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh
 create_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh_at
+create_topic_and_subscription shared-project sdx_receipt sdx-receipt_sdx-receipt-adapter sdx-receipt-adapter
 
 
 # RASRM Topics
