@@ -43,21 +43,23 @@ function checkout_repo_branch() {
 
     execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
 
-    # This is safety for pulling a 2nd time etc
-    execute_and_record_command "git pull" true
-
-    # TODO: If there's no branch for this repo (quite likely),  then just pull the image
-    # This would save a lot of building time.  Needs thinking about etc
+    if [ $? != 0 ] ; then
+        return 2
+    else
+        # This is safety for pulling a 2nd time etc
+        execute_and_record_command "git pull" true
+    fi
 }
 
 function checkout_and_build_repo_branch() {
     REPO_NAME=$1
     BRANCH_NAME_TO_CHECKOUT=$2
+    DOCKER_PULL=$3
 
     MAKE_BUILD='make build'
     MAKE_BUILD_NO_TEST='make build-no-test'
 
-    checkout_and_build_repo_branch_with_bespoke_commands $REPO_NAME $BRANCH_NAME_TO_CHECKOUT "${MAKE_BUILD}" "${MAKE_BUILD_NO_TEST}"
+    checkout_and_build_repo_branch_with_bespoke_commands $REPO_NAME $BRANCH_NAME_TO_CHECKOUT "${MAKE_BUILD}" "${MAKE_BUILD_NO_TEST}" $DOCKER_PULL
 
     popd
 }
@@ -67,15 +69,20 @@ checkout_and_build_repo_branch_with_bespoke_commands() {
     BRANCH_NAME_TO_CHECKOUT=$2
     RUN_TESTS_CMD=$3
     SKIP_TESTS_CMD=$4
+    DOCKER_PULL=$5
 
     checkout_repo_branch $REPO_NAME $BRANCH_NAME_TO_CHECKOUT
 
-    if [ "$SKIP_TESTS" = true ] ; then
-        echo "${REPO_NAME} Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
-        execute_and_record_command "${SKIP_TESTS_CMD}" true
+    if [ $? = 2 ] && [ "$DOCKER_PULL" = true ] ; then
+        execute_and_record_command "docker pull europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/$REPO_NAME" true
     else
-        echo "${REPO_NAME} Running Tests: Running CMD: ${RUN_TESTS_CMD}"
-        execute_and_record_command "${RUN_TESTS_CMD}" true
+        if [ "$SKIP_TESTS" = true ] ; then
+            echo "${REPO_NAME} Skipping Tests: Running CMD: ${SKIP_TESTS_CMD}"
+            execute_and_record_command "${SKIP_TESTS_CMD}" true
+        else
+            echo "${REPO_NAME} Running Tests: Running CMD: ${RUN_TESTS_CMD}"
+            execute_and_record_command "${RUN_TESTS_CMD}" true
+        fi
     fi
 
     popd
@@ -173,38 +180,38 @@ killOffRunningDocker
 MVN_INSTALL_TEST_CMD="mvn clean install"
 MVN_INSTALL_ONLY_CMD="mvn clean install -Dmaven.test.skip=true -DdockerCompose.skip=true"
 
-# Install Shared 
-checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}"
+# Install Shared, will always build as it does not exist in Artifact Registry
+checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}" false
 
 # Install DDL
-checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build"
+checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build" true
 
 # Case Processor
-checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME true
 
 # Case API
-checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME true
 
 # Notify Service
-checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME true
 
 # Export File Service
-checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME true
 
 # Support Tool
-checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME true
 
 # ROPS
-checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME true
 
 #Qid Service
-checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME true
 
 #Exception Manger
-checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME true
 
 # Job Processor
-checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME
+checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME true
 
 ########################################################################################################################
 #  Set up Docker Dev
