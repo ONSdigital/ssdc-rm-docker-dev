@@ -154,6 +154,9 @@ services:
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
       - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
+      - NOTIFY_APIKEY=dummykey-ffffffff-ffff-ffff-ffff-ffffffffffff-ffffffff-ffff-ffff-ffff-ffffffffffff
+      - NOTIFY_BASURL=https://dummy-notify:123
+      - NOTIFY_SENDERID=6bf5f8c2-bc4e-4bbc-a855-aa708d5fdfe7
     restart: always
     healthcheck:
       test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:9999/actuator/health" ]
