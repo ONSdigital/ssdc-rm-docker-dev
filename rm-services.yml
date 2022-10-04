@@ -19,9 +19,6 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - CASEREFGENERATORKEY=${CASEREFGENERATORKEY}
-      - RAS-RM-PARTY-SERVICE_CONNECTION_HOST=host.docker.internal
-      - RAS-RM-CASE-SERVICE_CONNECTION_HOST=host.docker.internal
-      - QUEUECONFIG_RAS-RM-PUBSUB-PROJECT=ras-rm-project
     healthcheck:
       test: [ "CMD", "find", "/tmp/case-processor-healthy", "-mmin", "-1" ]
       interval: 60s
@@ -153,7 +150,6 @@ services:
       - EXPORTFILEDESTINATIONCONFIGFILE=/home/supporttool/dummy_destination_config.json
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-      - RAS-RM-SAMPLE-SERVICE_CONNECTION_HOST=host.docker.internal
     restart: always
     healthcheck:
       test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:9999/actuator/health" ]

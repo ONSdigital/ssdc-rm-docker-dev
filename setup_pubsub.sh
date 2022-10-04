@@ -100,8 +100,4 @@ create_topic_and_subscription shared-project event_collection-exercise-update ev
 create_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh_at
 create_topic_and_subscription shared-project sdx_receipt sdx-receipt_sdx-receipt-adapter sdx-receipt-adapter
 
-
-# RASRM Topics
-create_topic_and_subscription ras-rm-project case-notification case-notification_testing
-
 echo
