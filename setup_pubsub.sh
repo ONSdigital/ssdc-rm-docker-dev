@@ -69,7 +69,6 @@ echo
 echo -n "pubsub-emulator is ready, running setup..."
 
 # Internal Topics
-create_topic_and_subscription our-project rm-internal-telephone-capture rm-internal-telephone-capture_case-processor
 create_topic_and_subscription our-project rm-internal-sms-request rm-internal-sms-request_notify-service
 create_topic_and_subscription our-project rm-internal-sms-request-enriched rm-internal-sms-request-enriched_notify-service
 create_topic_and_subscription our-project rm-internal-sms-confirmation rm-internal-sms-confirmation_case-processor
