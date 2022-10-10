@@ -144,7 +144,6 @@ make: *** [pull] Error 1
 ```
 
 1. Create a docker hub account
-1. Ask to become a team member of sdcplatformras
 1. Run `docker login` in a terminal and use your docker hub account
 
 ### Database already running
