@@ -270,7 +270,7 @@ services:
 
   rh-ui:
     container_name: rh-ui
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/rh-ui
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/sdc-int-rh-ui:latest
     depends_on:
       - redis
     environment:
