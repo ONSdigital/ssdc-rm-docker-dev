@@ -99,5 +99,6 @@ create_subscription shared-project event_survey-update event_survey-update_rh_at
 create_topic_and_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh
 create_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh_at
 create_topic_and_subscription shared-project sdx_receipt sdx-receipt_sdx-receipt-adapter sdx-receipt-adapter
+create_subscription out-project cloud_task_queue cloud_task_queue_at
 
 echo
