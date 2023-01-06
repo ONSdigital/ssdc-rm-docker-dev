@@ -75,6 +75,7 @@ create_topic_and_subscription our-project rm-internal-sms-confirmation rm-intern
 create_topic_and_subscription our-project rm-internal-email-request rm-internal-email-request_notify-service
 create_topic_and_subscription our-project rm-internal-email-request-enriched rm-internal-email-request-enriched_notify-service
 create_topic_and_subscription our-project rm-internal-email-confirmation rm-internal-email-confirmation_case-processor
+create_topic our-project cloud_task_queue
 
 # Shared Topics: RM Subscriptions
 create_topic_and_subscription shared-project event_new-case event_new-case_rm-case-processor
