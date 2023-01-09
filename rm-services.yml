@@ -246,6 +246,7 @@ services:
     environment:
       - spring.cloud.gcp.pubsub.emulator-host=pubsub-emulator:8538
       - spring.cloud.gcp.pubsub.project-id=our-project
+      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=our-project
       - firestore.project-id=our-project
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:8540
       - GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/google-credentials.json
