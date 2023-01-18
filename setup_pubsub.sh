@@ -76,27 +76,31 @@ create_topic_and_subscription our-project rm-internal-email-request rm-internal-
 create_topic_and_subscription our-project rm-internal-email-request-enriched rm-internal-email-request-enriched_notify-service
 create_topic_and_subscription our-project rm-internal-email-confirmation rm-internal-email-confirmation_case-processor
 
-# Shared Topics: RM Subscriptions
-create_topic_and_subscription shared-project event_new-case event_new-case_rm-case-processor
-create_topic_and_subscription shared-project event_receipt event_receipt_rm-case-processor
-create_topic_and_subscription shared-project event_refusal event_refusal_rm-case-processor
-create_topic_and_subscription shared-project event_invalid-case event_invalid-case_rm-case-processor
-create_topic_and_subscription shared-project event_eq-launch event_eq-launch_rm-case-processor
-create_topic_and_subscription shared-project event_uac-authentication event_uac-authentication_rm-case-processor
-create_topic_and_subscription shared-project event_print-fulfilment event_print-fulfilment_rm-case-processor
-create_topic_and_subscription shared-project event_deactivate-uac event_deactivate-uac_rm-case-processor
-create_topic_and_subscription shared-project event_update-sample event_update-sample_rm-case-processor
-create_topic_and_subscription shared-project event_update-sample-sensitive event_update-sample-sensitive_rm-case-processor
+# Event Topics: RM Subscriptions
+create_topic_and_subscription our-project event_new-case event_new-case_rm-case-processor
+create_topic_and_subscription our-project event_receipt event_receipt_rm-case-processor
+create_topic_and_subscription our-project event_refusal event_refusal_rm-case-processor
+create_topic_and_subscription our-project event_invalid-case event_invalid-case_rm-case-processor
+create_topic_and_subscription our-project event_eq-launch event_eq-launch_rm-case-processor
+create_topic_and_subscription our-project event_uac-authentication event_uac-authentication_rm-case-processor
+create_topic_and_subscription our-project event_print-fulfilment event_print-fulfilment_rm-case-processor
+create_topic_and_subscription our-project event_deactivate-uac event_deactivate-uac_rm-case-processor
+create_topic_and_subscription our-project event_update-sample event_update-sample_rm-case-processor
+create_topic_and_subscription our-project event_update-sample-sensitive event_update-sample-sensitive_rm-case-processor
 
-# Shared Topics: RH Subscriptions & AT Subscriptions
-create_topic_and_subscription shared-project event_case-update event_case-update_rh
-create_subscription shared-project event_case-update event_case-update_rh_at
-create_topic_and_subscription shared-project event_uac-update event_uac-update_rh
-create_subscription shared-project event_uac-update event_uac-update_rh_at
-create_topic_and_subscription shared-project event_survey-update event_survey-update_rh
-create_subscription shared-project event_survey-update event_survey-update_rh_at
-create_topic_and_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh
-create_subscription shared-project event_collection-exercise-update event_collection-exercise-update_rh_at
-create_topic_and_subscription shared-project sdx_receipt sdx-receipt_sdx-receipt-adapter sdx-receipt-adapter
+# Event Topics: RH Subscriptions & AT Subscriptions
+create_topic_and_subscription our-project event_case-update event_case-update_rh
+create_subscription our-project event_case-update event_case-update_rh_at
+create_topic_and_subscription our-project event_uac-update event_uac-update_rh
+create_subscription our-project event_uac-update event_uac-update_rh_at
+create_topic_and_subscription our-project event_survey-update event_survey-update_rh
+create_subscription our-project event_survey-update event_survey-update_rh_at
+create_topic_and_subscription our-project event_collection-exercise-update event_collection-exercise-update_rh
+create_subscription our-project event_collection-exercise-update event_collection-exercise-update_rh_at
+create_topic_and_subscription our-project sdx_receipt sdx-receipt_sdx-receipt-adapter sdx-receipt-adapter
+
+# Cloud Tasks
+create_topic our-project cloud_task_queue
+create_subscription our-project cloud_task_queue cloud_task_queue_at
 
 echo
