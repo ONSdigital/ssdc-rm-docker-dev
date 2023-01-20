@@ -291,6 +291,8 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 networks:
   default:
