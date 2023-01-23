@@ -59,12 +59,6 @@ services:
     ports:
       - "6379:6379"
 
-  mock-service:
-    container_name: mock-service
-    image: europe-west2-docker.pkg.dev/ons-ci-int/int-docker-release/mock-service:latest
-    ports:
-      - "8163:8162"
-
 networks:
   ssdcrmdockerdev_default:
     external: true
