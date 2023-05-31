@@ -82,7 +82,6 @@ create_topic_and_subscription our-project event_receipt event_receipt_rm-case-pr
 create_topic_and_subscription our-project event_refusal event_refusal_rm-case-processor
 create_topic_and_subscription our-project event_invalid-case event_invalid-case_rm-case-processor
 create_topic_and_subscription our-project event_eq-launch event_eq-launch_rm-case-processor
-create_topic_and_subscription our-project event_uac-authentication event_uac-authentication_rm-case-processor
 create_topic_and_subscription our-project event_print-fulfilment event_print-fulfilment_rm-case-processor
 create_topic_and_subscription our-project event_deactivate-uac event_deactivate-uac_rm-case-processor
 create_topic_and_subscription our-project event_update-sample event_update-sample_rm-case-processor
@@ -104,3 +103,4 @@ create_topic our-project cloud_task_queue
 create_subscription our-project cloud_task_queue cloud_task_queue_at
 
 echo
+ 
