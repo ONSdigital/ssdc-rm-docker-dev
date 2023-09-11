@@ -302,7 +302,7 @@ services:
       - PORT=9093
       - RH_SVC_URL=http://host.docker.internal:8071/
     ports:
-      - "9093:9093"
+      - "9093:9092"
     healthcheck:
       test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9093/info/')" ]
       interval: 5s
