@@ -296,10 +296,10 @@ services:
 
   srm-rh-ui:
     container_name: srm-rh-ui
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui:latest
     environment:
       - APP_CONFIG=DevelopmentConfig
-      - PORT=9093
+      - PORT=9092
       - RH_SVC_URL=http://host.docker.internal:8071/
     ports:
       - "9093:9092"
