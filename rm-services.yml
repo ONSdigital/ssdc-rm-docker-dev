@@ -315,6 +315,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  caseprocessorpy:
+    container_name: caseprocessorpy
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/caseprocessorpy
+    external_links:
+      - postgres
+    environment:
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - DB_USERNAME=${POSTGRES_USERNAME}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=${POSTGRES_HOST}
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_NAME=${POSTGRES_DATABASE}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 networks:
   default:
     external: true
