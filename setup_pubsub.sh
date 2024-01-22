@@ -78,7 +78,8 @@ create_topic_and_subscription our-project rm-internal-email-confirmation rm-inte
 
 # Event Topics: RM Subscriptions
 create_topic_and_subscription our-project event_new-case event_new-case_rm-case-processor
-create_topic_and_subscription our-project event_new-case_2 event_new-case_rm-case-processor_2
+# Cheap way to get the java caseprocessor to not listen to the new case subscription
+create_topic_and_subscription our-project event_new-case_ignored event_new-case_rm-case-processor_ignored
 create_topic_and_subscription our-project event_receipt event_receipt_rm-case-processor
 create_topic_and_subscription our-project event_refusal event_refusal_rm-case-processor
 create_topic_and_subscription our-project event_invalid-case event_invalid-case_rm-case-processor
