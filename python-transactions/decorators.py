@@ -13,7 +13,7 @@ def pubsub_transaction(func: Callable) -> Callable:
             func(*args, **kwargs)
             pubsub_message.nack()
         except Exception as e:
-            print(f"PubSub decorator caugth error: {e}")
+            print(f"\nPubSub decorator caugth error: {e}\n")
             pubsub_message.nack()
             print(f"Message nacked: {pubsub_message.data}")
 
@@ -32,7 +32,7 @@ def sqlalchemy_transaction(func: Callable) -> Callable:
 
         except Exception as e:
             Session.remove()
-            print("DB transaction decorator caught exception: {e}")
+            print(f"\nDB transaction decorator caught exception: {e}\n")
             raise Exception("SQL transaction error")
 
     return with_transaction_handling

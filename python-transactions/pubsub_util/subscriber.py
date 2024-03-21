@@ -25,31 +25,6 @@ def delete_subscription(project_id: str, subscription_id: str) -> None:
 
     with subscriber:
         subscriber.delete_subscription(request={"subscription": subscription_path})
-
-    print(f"Subscription deleted: {subscription_path}.")
-
-
-def create_subscription_with_ordering(
-    project_id: str, topic_id: str, subscription_id: str
-) -> None:
-    """Create a subscription with ordering enabled."""
-
-    publisher = pubsub_v1.PublisherClient()
-    subscriber = pubsub_v1.SubscriberClient()
-    topic_path = publisher.topic_path(project_id, topic_id)
-    subscription_path = subscriber.subscription_path(project_id, subscription_id)
-
-    with subscriber:
-        subscription = subscriber.create_subscription(
-            request={
-                "name": subscription_path,
-                "topic": topic_path,
-                "enable_message_ordering": True,
-            }
-        )
-        print(f"Created subscription with ordering: {subscription}")
-        
-
         
 def create_subscription(project_id: str, topic_id: str, subscription_id: str) -> None:
     """Create a new pull subscription on the given topic."""
@@ -65,9 +40,6 @@ def create_subscription(project_id: str, topic_id: str, subscription_id: str) ->
         subscription = subscriber.create_subscription(
             request={"name": subscription_path, "topic": topic_path}
         )
-
-    print(f"Subscription created: {subscription}")
-
 
 def create_fresh_subscription(project_id: str, topic_id: str, subscription_id: str):
     try: 
