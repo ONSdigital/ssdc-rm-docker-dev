@@ -7,6 +7,8 @@ name = "pypi"
 google-cloud-pubsub = "*"
 flask = "*"
 requests = "*"
+sqlalchemy = "*"
+psycopg2 = "*"
 
 [requires]
 python_version = "3.11"
