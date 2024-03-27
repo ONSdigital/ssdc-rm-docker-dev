@@ -3,7 +3,7 @@ import sqlalchemy
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect, MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from .config import DatabaseConfig
+from python_transactions.config import DatabaseConfig
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 
@@ -25,7 +25,6 @@ def wait_for_postgres_ready():
                 f"postgresql+psycopg2://{DatabaseConfig.DB_USERNAME}:{DatabaseConfig.DB_PASSWORD}@{DatabaseConfig.DB_HOST}:{DatabaseConfig.DB_PORT}/{DatabaseConfig.DB_NAME}")
             CONN = ENGINE.connect()
             CONN.close()
-            print("CONNECTED!")
             return
         except:
             print('waiting...')

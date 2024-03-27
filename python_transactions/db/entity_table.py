@@ -10,9 +10,9 @@ class Entity(Base):
 
 def print_all_entities():
     session = Session()
-    print('Entities: ')
+    print('Entities in table: ')
     for user in session.query(Entity):
-        print(f"Entity.id: {user.id}")
+        print(f"Entity.id: {user.id}\n")
 
 def drop_example_table():
     session = Session()
