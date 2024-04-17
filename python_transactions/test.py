@@ -12,8 +12,6 @@ def callback(message: pubsub_v1.subscriber.message.Message, session: Session) ->
     survey = Entity(id=1, text="Test Entity")
     session.add(survey)
     print(f"Message {message.attributes.get('number')} received!")
-    message.ack()
-
 
 if __name__ == "__main__":
     project_id = PubsubConfig.PROJECT

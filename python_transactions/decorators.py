@@ -11,7 +11,8 @@ def pubsub_transaction(func: Callable) -> Callable:
 
         try:
             func(*args, **kwargs)
-            pubsub_message.nack()
+            pubsub_message.ack()
+            print(f"Message acked: {pubsub_message.data}\n")
         except Exception as e:
             print(f"\nPubSub decorator caugth error: {e}\n")
             pubsub_message.nack()
