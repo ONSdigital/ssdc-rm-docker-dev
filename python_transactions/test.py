@@ -1,13 +1,12 @@
 from .db.db_utility import create_tables
-from .decorators import pubsub_transaction, sqlalchemy_transaction
+from .decorators import transaction
 from .pubsub_util.publisher import *
 from .pubsub_util.subscriber import *
 from .db.entity_table import Entity, print_all_entities, drop_example_table
 from sqlalchemy.orm import Session
 from .config import PubsubConfig
 
-@pubsub_transaction
-@sqlalchemy_transaction
+@transaction
 def callback(message: pubsub_v1.subscriber.message.Message, session: Session) -> None:
     survey = Entity(id=1, text="Test Entity")
     session.add(survey)

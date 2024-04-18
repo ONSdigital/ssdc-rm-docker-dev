@@ -37,3 +37,27 @@ def sqlalchemy_transaction(func: Callable) -> Callable:
             raise Exception("SQL transaction error")
 
     return with_transaction_handling
+
+
+def transaction(callback: Callable) -> Callable:
+
+    @wraps(callback)
+    def with_transaction_handling(*args, **kwargs):
+        local_session = Session()
+        pubsub_message = args[0]
+
+        try:
+            callback(*args, **kwargs, session=local_session)
+            local_session.commit()
+            Session.remove()
+            print("Session commited OK")
+            pubsub_message.ack()
+            print(f"Message {pubsub_message.data} acked OK")
+            
+        except Exception as e:
+            Session.remove()
+            pubsub_message.nack()
+            print(f"Transaction error: {e}")
+
+    return with_transaction_handling
+
