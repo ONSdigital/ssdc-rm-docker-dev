@@ -277,33 +277,15 @@ services:
 
   rh-ui:
     container_name: rh-ui
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/sdc-int-rh-ui:latest
-    environment:
-      - CONFIG_NAME=DevelopmentConfig
-      - PORT=9092
-      - RHSVC_URL=http://host.docker.internal:8071
-    ports:
-      - "${RH_UI_PORT}:9092"
-    healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-      start_period: 5s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
-  srm-rh-ui:
-    container_name: srm-rh-ui
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui:latest
     environment:
       - APP_CONFIG=DevelopmentConfig
       - PORT=9092
-      - RH_SVC_URL=http://host.docker.internal:8071/
+      - RH_SVC_URL=http://host.docker.internal:8071
     ports:
-      - "9093:9092"
+      - "${RH_UI_PORT}:9092"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info/')" ]
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
       interval: 5s
       timeout: 3s
       retries: 20
