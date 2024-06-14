@@ -53,12 +53,6 @@ services:
         target: /gcp/config/google-credentials.json
 
 
-  redis:
-    container_name: redis
-    image: redis
-    ports:
-      - "6379:6379"
-
 networks:
   ssdcrmdockerdev_default:
     external: true
