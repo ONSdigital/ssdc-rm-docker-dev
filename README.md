@@ -125,13 +125,19 @@ Development using this repo can be done by doing the following:
 1. Start all the services `make up`
 2. Navigate to `localhost:81` in your browser
 3. Login with `ons@ons.gov` / `secret`
-4. Object -> Create -> Server...
-5. Give it a suitable name then in the connection tab:
-   1. `postgres` for the host name
-   1. `5432` for the port
-   1. `postgres` for the maintenance database
-   1. `appuser` for the username
-6. Click save to close the dialog and connect to the postgres docker container
+4. Object -> Register -> Server...
+5. Give it a suitable name in the `General` tab
+6. Then in the `Connection` tab set:
+
+   | <!-- -->              | <!-- -->   |
+   | --------------------- | ---------- |
+   | Host name/ address:   | `postgres  |
+   | Port:                 | `5432`     |
+   | Maintenance database: | `postgres` |
+   | Username:             | `appuser`  |
+   | Password:             | `postgres` |
+
+7. Click save to close the dialog and connect to the postgres docker container
 
 ## Troubleshooting
 
