@@ -131,7 +131,7 @@ Development using this repo can be done by doing the following:
 
    | <!-- -->              | <!-- -->   |
    | --------------------- | ---------- |
-   | Host name/ address:   | `postgres  |
+   | Host name/ address:   | `postgres`  |
    | Port:                 | `5432`     |
    | Maintenance database: | `postgres` |
    | Username:             | `appuser`  |
