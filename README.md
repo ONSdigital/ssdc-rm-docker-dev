@@ -47,10 +47,10 @@ below command to the .zshrc (if using a z shell) or .inputrc or .profile or .bas
 eval "$(pyenv init -)"
 ```
 
-- **`pyenv --version`**      # check whether pyenv is installed
-- **`brew install pyenv`**   # install pyenv with brew
-- **`pyenv install 3.X.Y`**  # the app needs python 3.9
-- **`pyenv local 3.x.y`**    # whenever you come to this directory this python will be used
+- **`pyenv --version`** # check whether pyenv is installed
+- **`brew install pyenv`** # install pyenv with brew
+- **`pyenv install 3.X.Y`** # the app needs python 3.9
+- **`pyenv local 3.x.y`** # whenever you come to this directory this python will be used
 
 pyenv local will create a **.python-version** file so that whenever you return to the directory your python env is set.
 Note that this has been put into `.gitignore`
@@ -60,8 +60,8 @@ Note that this has been put into `.gitignore`
 As this project maintains a pip file you can ascertain validity by running **`pipenv check`** - whenever Python is
 upgraded the Pipfile change is all that is required. To ensure you are in sync use
 
-- **`pipenv check`**  # check whether the environments match
-- **`pipenv --rm`**   # if the check fails remove the current environment
+- **`pipenv check`** # check whether the environments match
+- **`pipenv --rm`** # if the check fails remove the current environment
 
 ## Setup Based on python 3.X.Y
 
@@ -123,15 +123,21 @@ Development using this repo can be done by doing the following:
 ### pgAdmin 4
 
 1. Start all the services `make up`
-2. Navigate to `localhost:80` in your browser
+2. Navigate to `localhost:81` in your browser
 3. Login with `ons@ons.gov` / `secret`
-4. Object -> Create -> Server...
-5. Give it a suitable name then in the connection tab:
-    1. `postgres` for the host name
-    1. `5432` for the port
-    1. `postgres` for the maintenance database
-    1. `postgres` for the username
-6. Click save to close the dialog and connect to the postgres docker container
+4. Object -> Register -> Server...
+5. Give it a suitable name in the `General` tab
+6. Then in the `Connection` tab set:
+
+   | <!-- -->              | <!-- -->   |
+   | --------------------- | ---------- |
+   | Host name/ address:   | `postgres`  |
+   | Port:                 | `5432`     |
+   | Maintenance database: | `postgres` |
+   | Username:             | `appuser`  |
+   | Password:             | `postgres` |
+
+7. Click save to close the dialog and connect to the postgres docker container
 
 ## Troubleshooting
 
