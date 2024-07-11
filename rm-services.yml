@@ -10,7 +10,6 @@ services:
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
-      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=our-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
       - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
       - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
@@ -140,7 +139,6 @@ services:
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
-      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=our-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
@@ -231,7 +229,6 @@ services:
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
-      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=our-project
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
@@ -251,7 +248,6 @@ services:
     environment:
       - spring.cloud.gcp.pubsub.emulator-host=pubsub-emulator:8538
       - spring.cloud.gcp.pubsub.project-id=our-project
-      - QUEUECONFIG_SHARED-PUBSUB-PROJECT=our-project
       - firestore.project-id=our-project
       - FIRESTORE_EMULATOR_HOST=firestore-emulator:8540
       - GOOGLE_APPLICATION_CREDENTIALS=/gcp/config/google-credentials.json
