@@ -289,6 +289,27 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  support-api:
+    container_name: support-api
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-support-api:latest
+    environment:
+      - APP_CONFIG=DevelopmentConfig
+      - PORT=${SUPPORT_API_PORT}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+    ports:
+      - "${SUPPORT_API_PORT}:9095"
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9095/info/')" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
 networks:
   default:
     external: true
