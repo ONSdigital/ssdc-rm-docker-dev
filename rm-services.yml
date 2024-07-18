@@ -289,6 +289,21 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+  support-frontend:
+    container_name: support-frontend
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-support-frontend:latest
+    environment:
+      - APP_CONFIG=DevelopmentConfig
+      - PORT=${SUPPORT_FRONTEND_PORT}
+    ports:
+      - "${SUPPORT_FRONTEND_PORT}:9096"
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9096/info')" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
 networks:
   default:
     external: true
