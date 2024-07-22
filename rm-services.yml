@@ -298,7 +298,7 @@ services:
     ports:
       - "${SUPPORT_FRONTEND_PORT}:9096"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9096/info')" ]
+      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9096/info/')" ]
       interval: 5s
       timeout: 3s
       retries: 20
