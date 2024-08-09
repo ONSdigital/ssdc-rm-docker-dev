@@ -277,7 +277,7 @@ services:
     environment:
       - APP_CONFIG=DevelopmentConfig
       - PORT=9092
-      - RH_SVC_URL=http://host.docker.internal:8071
+      - RH_SVC_URL=http://rh-service:8071
     ports:
       - "${RH_UI_PORT}:9092"
     healthcheck:
@@ -286,8 +286,6 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   support-api:
     container_name: support-api
@@ -316,6 +314,7 @@ services:
     environment:
       - APP_CONFIG=DevelopmentConfig
       - PORT=${SUPPORT_FRONTEND_PORT}
+      - SUPPORT_API_URL=http://support-api:9095
     ports:
       - "${SUPPORT_FRONTEND_PORT}:9096"
     healthcheck:
