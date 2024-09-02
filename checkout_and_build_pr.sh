@@ -39,11 +39,12 @@ function checkout_repo_branch() {
 
     # echo "Git cloning ${GIT_SSH}"
     execute_and_record_command "git clone ${GIT_SSH} " true
-    pushd $REPO_NAME
+    pushd "$REPO_NAME" || exit
 
     execute_and_record_command "git checkout ${BRANCH_NAME_TO_CHECKOUT}" false
+    EXIT_CODE=$?
 
-    if [ $? != 0 ] ; then
+    if ! [ "$EXIT_CODE" = 0 ] ; then
         return 2
     else
         # This is safety for pulling a 2nd time etc
@@ -59,9 +60,9 @@ function checkout_and_build_repo_branch() {
     MAKE_BUILD='make build'
     MAKE_BUILD_NO_TEST='make build-no-test'
 
-    checkout_and_build_repo_branch_with_bespoke_commands $REPO_NAME $BRANCH_NAME_TO_CHECKOUT "${MAKE_BUILD}" "${MAKE_BUILD_NO_TEST}" $DOCKER_PULL
+    checkout_and_build_repo_branch_with_bespoke_commands "$REPO_NAME" "$BRANCH_NAME_TO_CHECKOUT" "${MAKE_BUILD}" "${MAKE_BUILD_NO_TEST}" "$DOCKER_PULL"
 
-    popd
+    popd || exit
 }
 
 checkout_and_build_repo_branch_with_bespoke_commands() {
@@ -71,7 +72,7 @@ checkout_and_build_repo_branch_with_bespoke_commands() {
     SKIP_TESTS_CMD=$4
     DOCKER_PULL=$5
 
-    checkout_repo_branch $REPO_NAME $BRANCH_NAME_TO_CHECKOUT
+    checkout_repo_branch "$REPO_NAME" "$BRANCH_NAME_TO_CHECKOUT"
 
     if [ $? = 2 ] && [ "$DOCKER_PULL" = true ] ; then
         execute_and_record_command "docker pull europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/$REPO_NAME" true
@@ -85,7 +86,7 @@ checkout_and_build_repo_branch_with_bespoke_commands() {
         fi
     fi
 
-    popd
+    popd || { echo "Unable to change to previous directory"; exit; }
 }
 
 function killOffRunningDocker() {
@@ -94,10 +95,10 @@ function killOffRunningDocker() {
         echo "Leaving Docker alone"
     else
         echo 'Stopping any running Docker containers'
-        docker stop $(docker ps -aq)
+        docker stop "$(docker ps -aq)"
 
         echo 'Removing any stopped Docker containers'
-        docker rm $(docker ps -a -q)
+        docker rm "$(docker ps -a -q)"
     fi
 }
 
@@ -106,13 +107,13 @@ function createNewBaseDir() {
     PR_DIR="${PWD}/PR_DIR"
 
     echo "PR_DIR: "
-    mkdir -p $PR_DIR
-    cd $PR_DIR
+    mkdir -p "$PR_DIR"
+    cd "$PR_DIR" || { echo "Unable to change to ${PR_DIR} previous directory"; exit; }
 
     echo "Making branch dir to make ${BRANCH_DIR_TO_MAKE}"
-    mkdir -p $BRANCH_DIR_TO_MAKE
+    mkdir -p "$BRANCH_DIR_TO_MAKE"
 
-    cd $BRANCH_DIR_TO_MAKE
+    cd "$BRANCH_DIR_TO_MAKE" || { echo "Unable to change to ${BRANCH_DIR_TO_MAKE} previous directory"; exit; }
     echo "Now in new DIR: ${PWD}"
 
     # because Bash is a painful, set a global
@@ -124,7 +125,7 @@ function createNewBaseDir() {
 function wait_until_containers_are_running_or_timeout() {
     WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS=180
 
-    for (( i=0; i<=$WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS; i++ ))
+    for (( i=0; i<="$WAIT_FOR_DOCKER_UP_TIMEOUT_SECONDS"; i++ ))
     do
         support_tool_logs=$(docker logs --tail=10 supporttool)
 
@@ -163,7 +164,7 @@ if [ -z "$BRANCH_NAME" ]; then
 fi
 
 # Create the baseDir
-createNewBaseDir $BRANCH_NAME
+createNewBaseDir "$BRANCH_NAME"
 
 if [ "$SKIP_TESTS" = true ] ; then
     echo "Script will Skip Tests"
@@ -181,49 +182,50 @@ MVN_INSTALL_TEST_CMD="mvn clean install"
 MVN_INSTALL_ONLY_CMD="mvn clean install -Dmaven.test.skip=true -DdockerCompose.skip=true"
 
 # Install Shared, will always build as it does not exist in Artifact Registry
-checkout_and_build_repo_branch "ssdc-shared-sample-validation" $BRANCH_NAME "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}" false
+checkout_and_build_repo_branch "ssdc-shared-sample-validation" "$BRANCH_NAME" "${MVN_INSTALL_TEST_CMD}" "${MVN_INSTALL_ONLY_CMD}" false
 
 # Install DDL
-checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" $BRANCH_NAME "make dev-build" "make dev-build" true
+checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" "$BRANCH_NAME" "make dev-build" "make dev-build" true
 
 # Case Processor
-checkout_and_build_repo_branch "ssdc-rm-caseprocessor" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-caseprocessor" "$BRANCH_NAME" true
 
 # Case API
-checkout_and_build_repo_branch "ssdc-rm-case-api" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-case-api" "$BRANCH_NAME" true
 
 # Notify Service
-checkout_and_build_repo_branch "ssdc-rm-notify-service" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-notify-service" "$BRANCH_NAME" true
 
 # Export File Service
-checkout_and_build_repo_branch "ssdc-rm-export-file-service" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-export-file-service" "$BRANCH_NAME" true
 
 # Support Tool
-checkout_and_build_repo_branch "ssdc-rm-support-tool" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-support-tool" "$BRANCH_NAME" true
 
 # ROPS
-checkout_and_build_repo_branch "ssdc-rm-response-operations" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-response-operations" "$BRANCH_NAME" true
 
 #Qid Service
-checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" "$BRANCH_NAME" true
 
 #Exception Manger
-checkout_and_build_repo_branch "ssdc-rm-exception-manager" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-exception-manager" "$BRANCH_NAME" true
 
 # Job Processor
-checkout_and_build_repo_branch "ssdc-rm-job-processor" $BRANCH_NAME true
+checkout_and_build_repo_branch "ssdc-rm-job-processor" "$BRANCH_NAME" true
 
 ########################################################################################################################
 #  Set up Docker Dev
 ########################################################################################################################
-cd $DOCKER_DEV_DIR
+cd "$DOCKER_DEV_DIR" || { echo "Unable to change into $DOCKER_DEV_DIR directory"; exit; }
 execute_and_record_command "make up" true
 
 ########################################################################################################################
 #  Acceptance Tests
 ########################################################################################################################
-cd $BRANCH_PR_DIR
-checkout_repo_branch "ssdc-rm-acceptance-tests" $BRANCH_NAME_TO_CHECKOUT
+cd "$BRANCH_PR_DIR" || { echo "Unable to change into $BRANCH_PR_DIR directory"; exit; }
+
+checkout_repo_branch "ssdc-rm-acceptance-tests" "$BRANCH_NAME_TO_CHECKOUT"
 execute_and_record_command "pipenv install --dev" true
 
 if [ "$SKIP_TESTS" = true ]
@@ -236,14 +238,14 @@ else
     execute_and_record_command "make test" true
 fi
 
-popd
+popd || { echo "Unable to change directory"; exit; }
 
 ########################################################################################################################
 # Output Record
 ########################################################################################################################
 
 echo -e "\n\n"
-echo -e $REPO_CMD_HISTORY
+echo -e "$REPO_CMD_HISTORY"
 echo -e "\n\n"
 
 ########################################################################################################################
