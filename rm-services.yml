@@ -315,6 +315,7 @@ services:
       - APP_CONFIG=DevelopmentConfig
       - PORT=${SUPPORT_FRONTEND_PORT}
       - SUPPORT_API_URL=http://support-api:9095
+      - DEBUG=False
     ports:
       - "${SUPPORT_FRONTEND_PORT}:9096"
     healthcheck:
