@@ -2,3 +2,6 @@
 .python-version
 .DS_Store
 PR_DIR
+
+# Megalinter reports
+megalinter-reports/
