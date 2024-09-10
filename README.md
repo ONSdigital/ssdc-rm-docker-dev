@@ -33,7 +33,7 @@ make pull
 
 ## Configure Local Python Environments to Run Acceptance Tests
 
-#### Currently Supported Python Version is 3.9.x
+### Currently Supported Python Version is 3.9.x
 
 The goal is to setup our python environments ready to run Python 3.X.X (whaterver is currently supported). It is good
 practise to keep your machine version in line with the latest.
@@ -43,7 +43,7 @@ Validate your python versions with **`python -V`** and printenv.
 Initializing pyenv is one of those boring things that must always be done. You can circumnavigate this by adding the
 below command to the .zshrc (if using a z shell) or .inputrc or .profile or .bash_profile (if using a bash on a Mac).
 
-```
+```shell
 eval "$(pyenv init -)"
 ```
 
@@ -82,7 +82,7 @@ There are two docker-compose files:
 
 These can be run together as per the Quickstart section or individually.
 
-```
+```shell
 docker compose -f rm-dependencies.yml -f rm-services.yml up -d
 ```
 
@@ -90,7 +90,7 @@ This will spin up the development containers and the rm-services.
 
 Additionally, individual services can be specified at the end of the command. For example:
 
-```
+```shell
 docker compose -f rm-services.yml up -d caseprocessor
 ```
 
@@ -143,7 +143,7 @@ Development using this repo can be done by doing the following:
 
 ### Not logged in
 
-```
+```shell
 Pulling iac (sdcplatform/iacsvc:latest)...
 ERROR: pull access denied for sdcplatform/iacsvc, repository does not exist or may require 'docker login'
 make: *** [pull] Error 1
@@ -159,7 +159,7 @@ make: *** [pull] Error 1
 
 ### Port already bound to
 
-```
+```text
 ERROR: for collection-instrument  Cannot start service collection-instrument-service: driver failed programming external connectivity on endpoint collection-instrument (7c6ad787c9d57028a44848719d8d705b14e1f82ea2f393ada80e5f7e476c50b1): Error starting userland pStarting secure-message ... done
 
 ERROR: for collection-instrument-service  Cannot start service collection-instrument-service: driver failed programming external connectivity on endpoint collection-instrument (7c6ad787c9d57028a44848719d8d705b14e1f82ea2f393ada80e5f7e476c50b1): Error starting userland proxy: Bind for 0.0.0.0:8002 failed: port is already allocated
@@ -172,7 +172,7 @@ make: *** [up] Error 1
 
 ### Docker network
 
-```
+```text
 ERROR: Network ssdcrmdockerdev_default declared as external, but could not be found. Please create the network manually using `docker network create ssdcrmdockerdev_default` and try again.
 make: *** [up] Error 1
 ```
