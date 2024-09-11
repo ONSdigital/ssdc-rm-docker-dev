@@ -27,33 +27,6 @@ services:
       start_period: 45s
 
 
-  caseapi:
-    container_name: caseapi
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-case-api
-    ports:
-      - "${CASE_API_PORT}:8161"
-    external_links:
-      - postgres
-      - pubsub-emulator
-    environment:
-      - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
-      - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=our-project
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - UACSERVICE_CONNECTION_HOST=${UAC_HOST}
-      - UACSERVICE_CONNECTION_PORT=${UAC_PORT}
-    restart: always
-    volumes:
-      - ./java_healthcheck:/opt/healthcheck/
-    healthcheck:
-      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:8161/actuator/health" ]
-      interval: 60s
-      timeout: 10s
-      retries: 4
-      start_period: 50s
-
-
   uacqid:
     container_name: uacqid
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-uac-qid-service

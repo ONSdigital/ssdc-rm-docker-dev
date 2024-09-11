@@ -190,9 +190,6 @@ checkout_and_build_repo_branch_with_bespoke_commands "ssdc-rm-ddl" "$BRANCH_NAME
 # Case Processor
 checkout_and_build_repo_branch "ssdc-rm-caseprocessor" "$BRANCH_NAME" true
 
-# Case API
-checkout_and_build_repo_branch "ssdc-rm-case-api" "$BRANCH_NAME" true
-
 # Notify Service
 checkout_and_build_repo_branch "ssdc-rm-notify-service" "$BRANCH_NAME" true
 
