@@ -25,6 +25,14 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.5'
+          memory: 500M
 
 
   uacqid:
@@ -48,7 +56,14 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 400M
+        reservations:
+          cpus: '0.3'
+          memory: 400M
 
   exceptionmanager:
     container_name: exceptionmanager
@@ -68,7 +83,14 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 400M
+        reservations:
+          cpus: '0.2'
+          memory: 400M
 
   exportfileservice:
     container_name: exportfileservice
@@ -100,6 +122,14 @@ services:
       - ./dummy_keys:/home/export-file-service/dummy_keys
       - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
       - ~/Documents/export_files:/home/export-file-service/export_files
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 500M
+        reservations:
+          cpus: '0.2'
+          memory: 500M
 
   supporttool:
     container_name: supporttool
@@ -134,31 +164,14 @@ services:
       - ./java_healthcheck:/opt/healthcheck/
       - ./dummy_destination_config.json:/home/supporttool/dummy_destination_config.json
       - ./dummy-notify-config.json:/home/supporttool/dummy-notify-config.json
-
-  rops:
-    container_name: rops
-    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-response-operations
-    ports:
-      - "${ROPS_PORT}:7777"
-    external_links:
-      - postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-      - DUMMYUSERIDENTITY=${DUMMY_USER}
-      - DUMMYUSERIDENTITY-ALLOWED=true
-      - EXPORTFILEDESTINATIONCONFIGFILE=/home/response-operations/dummy_destination_config.json
-    restart: always
-    healthcheck:
-      test: [ "CMD", "java", "-jar", "/opt/healthcheck/HealthCheck.jar", "http://localhost:7777/actuator/health" ]
-      interval: 60s
-      timeout: 10s
-      retries: 4
-      start_period: 50s
-    volumes:
-      - ./java_healthcheck:/opt/healthcheck/
-      - ./dummy_destination_config.json:/home/response-operations/dummy_destination_config.json
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: 400M
+        reservations:
+          cpus: '0.3'
+          memory: 400M
 
   notifyservice:
     container_name: notifyservice
@@ -179,7 +192,6 @@ services:
       - NOTIFYSERVICECONFIGFILE=/home/notifyservice/dummy-notify-config.json
       - EXCEPTIONMANAGER_CONNECTION_HOST=${EXCEPTIONMANAGER_HOST}
       - EXCEPTIONMANAGER_CONNECTION_PORT=${EXCEPTIONMANAGER_PORT}
-
       - MESSAGELOGGING_LOGSTACKTRACES=true
     restart: always
     volumes:
@@ -191,7 +203,14 @@ services:
       timeout: 10s
       retries: 4
       start_period: 50s
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 400M
+        reservations:
+          cpus: '0.5'
+          memory: 400M
 
   jobprocessor:
     container_name: jobprocessor
@@ -212,6 +231,14 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 400M
+        reservations:
+          cpus: '0.5'
+          memory: 400M
 
   rh-service:
     container_name: rh-service
@@ -243,7 +270,14 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 400M
+        reservations:
+          cpus: '0.2'
+          memory: 400M
   rh-ui:
     container_name: rh-ui
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui:latest
@@ -259,6 +293,14 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 250M
+        reservations:
+          cpus: '0.2'
+          memory: 250M
 
   support-api:
     container_name: support-api
@@ -280,7 +322,15 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-      
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 250M
+        reservations:
+          cpus: '0.2'
+          memory: 250M
+
   support-frontend:
     container_name: support-frontend
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-support-frontend:latest
@@ -297,6 +347,14 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 250M
+        reservations:
+          cpus: '0.2'
+          memory: 250M
       
 networks:
   default:

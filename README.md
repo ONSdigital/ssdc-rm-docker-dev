@@ -13,6 +13,13 @@ using **docker compose** and **docker network**.
 
 Important is to configure your python environment - that's covered next.
 
+### Docker Resources
+
+The services need at least 5 CPUs and 7GB RAM between them for their resource allocations, so you will need to open the
+Docker settings and increase its resource allowances to at least these amounts. If you will be running anything else
+alongside the ATs (e.g. Another services integration tests) you may want to allow another CPU and GB of RAM for
+headroom.
+
 ## Quickstart
 
 ![make up](https://media.giphy.com/media/xULW8lyhMJjzyO33sA/giphy.gif)
@@ -129,13 +136,13 @@ Development using this repo can be done by doing the following:
 5. Give it a suitable name in the `General` tab
 6. Then in the `Connection` tab set:
 
-   | <!-- -->              | <!-- -->   |
-   | --------------------- | ---------- |
+   | <!-- -->              | <!-- -->    |
+   | --------------------- |-------------|
    | Host name/ address:   | `postgres`  |
-   | Port:                 | `5432`     |
-   | Maintenance database: | `postgres` |
-   | Username:             | `appuser`  |
-   | Password:             | `postgres` |
+   | Port:                 | `5432`      |
+   | Maintenance database: | `postgres`  |
+   | Username:             | `appuser`   |
+   | Password:             | `postgres`  |
 
 7. Click save to close the dialog and connect to the postgres docker container
 
