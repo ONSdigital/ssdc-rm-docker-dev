@@ -148,13 +148,13 @@ Development using this repo can be done by doing the following:
 5. Give it a suitable name in the `General` tab
 6. Then in the `Connection` tab set:
 
-   | <!-- -->              | <!-- -->   |
-   |-----------------------|------------|
-   | Host name/ address:   | `postgres` |
-   | Port:                 | `5432`     |
-   | Maintenance database: | `postgres` |
-   | Username:             | `appuser`  |
-   | Password:             | `postgres` |
+   | <!-- -->              | <!-- -->    |
+   | --------------------- |-------------|
+   | Host name/ address:   | `postgres`  |
+   | Port:                 | `5432`      |
+   | Maintenance database: | `postgres`  |
+   | Username:             | `appuser`   |
+   | Password:             | `postgres`  |
 
 7. Click save to close the dialog and connect to the postgres docker container
 
