@@ -278,5 +278,10 @@ unless SKIP_TESTS=true it will run the ATs too.
 
 If the PR doesn't have a docker dev, then run the script from main and specify the BRANCH_NAME.
 
-command defaut info BRANCH_NAME DEFAULTS TO DOCKER DEV BRANCH BRANCH TO CHECKOUT SKIP_TESTS FALSE SKIP BUILD AND
-ACCEPTANCE TESTS KILL_DOCKER TRUE KILLS AND REMOVES RUNNING CONTAINERS
+
+| command     | default                       | info                                 |
+|-------------|-------------------------------|--------------------------------------|
+| BRANCH_NAME | DEFAULTS TO DOCKER DEV BRANCH | BRANCH TO CHECKOUT                   |
+| SKIP_TESTS  | FALSE                         | SKIP BUILD AND ACCEPTANCE TESTS      |
+| KILL_DOCKER | TRUE                          | KILLS AND REMOVES RUNNING CONTAINERS |
+
