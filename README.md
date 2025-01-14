@@ -18,8 +18,8 @@ using **docker compose** and **docker network**.
 
 ## Pre-requisites
 
-1. You can access the google cloud docker registry
 1. Ask to become a team member of sdcplatform
+1. Run `gcloud auth login` to login to your gcloud account
 1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev` to associate your docker with the GCR registry
 1. Run `docker network create ssdcrmdockerdev_default` to create the docker network
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
