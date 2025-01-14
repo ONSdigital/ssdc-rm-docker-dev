@@ -3,6 +3,18 @@
 The goal of this repository is to enable team members to stand up a dockerized local RM and RH application
 using **docker compose** and **docker network**.
 
+## Table of contents
+
+- [Pre-requisites](#pre-requisites)
+- [Quickstart](#quickstart)
+- [Configuring local python environments](#configure-local-python-environments-to-run-acceptance-tests)
+- [Upgrading Python](#pipenv--upgrading-python--projects-with-a-pip-file)
+- [Setup](#setup-based-on-python-3xy)
+- [Slow start](#slowstart)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
+- [Pubsub Tools](#pubsub-tools)
+
 ## Pre-requisites
 
 1. You can access the google cloud docker registry
@@ -33,7 +45,7 @@ make pull
 
 ## Configure Local Python Environments to Run Acceptance Tests
 
-### Currently Supported Python Version is 3.9.x
+### Currently Supported Python Version is 3.11.x
 
 The goal is to setup our python environments ready to run Python 3.X.X (whaterver is currently supported). It is good
 practise to keep your machine version in line with the latest.
@@ -177,7 +189,7 @@ ERROR: Network ssdcrmdockerdev_default declared as external, but could not be fo
 make: *** [up] Error 1
 ```
 
-- Run `docker network create censusrmdockerdev_default` to create the docker network.
+- Run `docker network create ssdcrmdockerdev_default` to create the docker network.
 
 **NB:** Docker compose may warn you that the network is unused. This is a lie, it is in use.
 
@@ -211,7 +223,7 @@ preferences', then go to the 'advanced' tab. The default memory allocated to Doc
 the number of cores to 4 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
 just what worked for people.
 
-### Containers failing to write to disk?
+### Containers not updating or failing to write to disk?
 
 #### Or Docker using too much disk space in general?
 
