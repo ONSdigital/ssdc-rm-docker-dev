@@ -14,6 +14,7 @@ using **docker compose** and **docker network**.
 - [Development](#development)
 - [Troubleshooting](#troubleshooting)
 - [Pubsub Tools](#pubsub-tools)
+- [Create multiple branches from a PR](#checking-out-building-multiple-branches-from-a-pr)
 
 ## Pre-requisites
 
@@ -27,10 +28,18 @@ Important is to configure your python environment - that's covered next.
 
 ### Docker Resources
 
-The services need at least 5 CPUs and 7GB RAM between them for their resource allocations, so you will need to open the
-Docker settings and increase its resource allowances to at least these amounts. If you will be running anything else
+The services need at least 5 CPUs and 7GB RAM between them for their resource allocations.
+
+There are two ways to adjust this;
+#### docker desktop
+- Open the Docker settings and increase its resource allowances to at least these amounts. 
+
+#### via colima
+- `colima start --cpu 6 --memory 8`
+
+__If you will be running anything else
 alongside the ATs (e.g. Another services integration tests) you may want to allow another CPU and GB of RAM for
-headroom.
+headroom.__
 
 ## Quickstart
 
@@ -169,10 +178,48 @@ make: *** [pull] Error 1
 ```
 
 1. Create a docker hub account
-1. Run `docker login` in a terminal and use your docker hub account
-
-If this still doesn't work run `gcloud auth configure-docker europe-west2-docker.pkg.dev`\
+1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev`
 to associate your docker with the GCR registry.
+
+### Docker network
+
+```text
+ERROR: Network ssdcrmdockerdev_default declared as external, but could not be found. Please create the network manually using `docker network create ssdcrmdockerdev_default` and try again.
+make: *** [up] Error 1
+```
+
+- Run `docker network create ssdcrmdockerdev_default` to create the docker network.
+
+**NB:** Docker compose may warn you that the network is unused. This is a lie, it is in use.
+
+### Service not up?
+
+Some services aren't resilient to the database not being up before the service has started. Rerun `make up`
+
+### Services running sluggishly?
+
+When rm is all running it takes a lot of memory. You can edit this in docker desktop by click on the docker icon in the top bar of your Mac, then click on '
+preferences', then go to the 'advanced' tab. The default memory allocated to Docker is 2gb. Bumping that up to 8gb and
+the number of cores to 5 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
+just what worked for people.
+
+Or if you use colima you can simply run the command `colima start --cpu 6 --memory 8`.
+
+### Containers not updating or failing to write to disk?
+
+#### Or Docker using too much disk space in general?
+
+Over time, images and volumes can accumulate and consume too much disk storage space. If this reaches Docker's storage
+limit then it will cause failures when running our services, as containers will be denied disk writes, as well as
+failing image pulls.
+Most of this space is normally consumed by "dangling" or unused images and volumes, these can be automatically cleaned
+up with the `prune` tool.
+
+To automatically clean up containers, images, and volumes try running
+
+```shell
+docker system prune --volumes
+```
 
 ### Database already running
 
@@ -192,17 +239,6 @@ make: *** [up] Error 1
 - Kill the process hogging that port by running `lsof -n -i:8002|awk 'FNR == 2 { print $2 }'|xargs kill` where 8002 is
   the port you are trying to bind to
 
-### Docker network
-
-```text
-ERROR: Network ssdcrmdockerdev_default declared as external, but could not be found. Please create the network manually using `docker network create ssdcrmdockerdev_default` and try again.
-make: *** [up] Error 1
-```
-
-- Run `docker network create ssdcrmdockerdev_default` to create the docker network.
-
-**NB:** Docker compose may warn you that the network is unused. This is a lie, it is in use.
-
 ### Java Healthcheck
 
 Since docker compose health checks are run inside the container, we need a method of checking service health that can
@@ -221,33 +257,6 @@ run `make rebuild-java-healthcheck` to compile and package the updated class int
 1. Remove containers `docker rm $(docker ps -aq)`
 1. Delete images `docker rmi $(docker images europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/* -qa)`
 1. Pull and run containers `make up`
-
-### Service not up?
-
-Some services aren't resilient to the database not being up before the service has started. Rerun `make up`
-
-### Services running sluggishly?
-
-When rm is all running it takes a lot of memory. Click on the docker icon in the top bar of your Mac, then click on '
-preferences', then go to the 'advanced' tab. The default memory allocated to Docker is 2gb. Bumping that up to 8gb and
-the number of cores to 5 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
-just what worked for people.
-
-### Containers not updating or failing to write to disk?
-
-#### Or Docker using too much disk space in general?
-
-Over time, images and volumes can accumulate and consume too much disk storage space. If this reaches Docker's storage
-limit then it will cause failures when running our services, as containers will be denied disk writes, as well as
-failing image pulls.
-Most of this space is normally consumed by "dangling" or unused images and volumes, these can be automatically cleaned
-up with the `prune` tool.
-
-To automatically clean up containers, images, and volumes try running
-
-```shell
-docker system prune --volumes
-```
 
 ## Pubsub Tools
 
@@ -275,9 +284,12 @@ Run `./clear_messages.sh <SUBSCRIPTION> <PROJECT>`.
 
 ## Checking out, building multiple branches from a PR
 
+If you wish to checkout multiple repos from a PR, say if someone makes changes to multiple repos,
+rather than cd ing into every one and checking out and building them, there is a script provided that will do it all for you:
+
 Run `SKIP_TESTS=<true/false> BRANCH_NAME=<branch name> ./checkout_and_build_pr.sh`
 
-This will checkout and build a PR Branch for you. This script does not checkout docker-dev (what happens if the PR
+This script does not checkout docker-dev (what happens if the PR
 includes an update to the script!)
 Instead if the PR contains a docker-dev PR, checkout that docker dev. Run ./checkout_and_build_pr.sh and it'll look at
 the branch you're on and checkout and install in ./PR_DIR/ under docker dev. It should bring up the new images and
