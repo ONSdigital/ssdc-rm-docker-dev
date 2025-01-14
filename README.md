@@ -164,6 +164,9 @@ make: *** [pull] Error 1
 1. Create a docker hub account
 1. Run `docker login` in a terminal and use your docker hub account
 
+If this still doesn't work run `gcloud auth configure-docker europe-west2-docker.pkg.dev`\
+to associate your docker with the GCR registry.
+
 ### Database already running
 
 - `postgres` container not working? Check there isn't a local postgres running on your system as it uses port 5432
