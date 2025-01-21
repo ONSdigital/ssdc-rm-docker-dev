@@ -19,7 +19,7 @@ using **docker compose** and **docker network**.
 ## Pre-requisites
 
 1. Ask to become a team member of sdcplatform
-1. Run `gcloud auth login --update-ad` to login to your gcloud account
+1. Run `gcloud auth login --update-adc` to login to your gcloud account
 1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev` to associate your docker with the GCR registry
 1. Run `docker network create ssdcrmdockerdev_default` to create the docker network
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
@@ -177,7 +177,7 @@ ERROR: pull access denied for sdcplatform/iacsvc, repository does not exist or m
 make: *** [pull] Error 1
 ```
 
-1. Log un to gcloud `gcloud auth login --update-ad`
+1. Log in to gcloud `gcloud auth login --update-adc`
 1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev`
 to associate your docker with the GCR registry.
 
