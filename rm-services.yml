@@ -314,6 +314,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - LOCAL_SAMPLE_FILE_PATH=/home/support-api/sample_files
     ports:
       - "${SUPPORT_API_PORT}:9095"
     healthcheck:
@@ -322,6 +323,8 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
+    volumes:
+      - ./dummy_sample_files:/home/support-api/sample_files
     deploy:
       resources:
         limits:
