@@ -358,7 +358,38 @@ services:
         reservations:
           cpus: '0.2'
           memory: 250M
-      
+
+  autoprocessor:
+    container_name: autoprocessor
+    image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-autoprocessor
+    environment:
+      - ENVIRONMENT=DEV
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DATABASE}
+      - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
+      - SAMPLE_LOCATION=/home/autoprocessor/sample_files
+      - READINESS_FILE_PATH=/tmp/ready
+    restart: always
+    healthcheck:
+      test: sh -c "[ -f /tmp/ready ]"
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 50s
+    volumes:
+      - ./dummy_sample_files:/home/autoprocessor/sample_files
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 500M
+        reservations:
+          cpus: '0.2'
+          memory: 500M
+
 networks:
   default:
     external: true
