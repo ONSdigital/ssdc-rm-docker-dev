@@ -315,6 +315,8 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}
       - LOCAL_SAMPLE_FILES_PATH=/home/support-api/sample_files
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
+      - PROJECT_ID=our-project
     ports:
       - "${SUPPORT_API_PORT}:9095"
     healthcheck:
