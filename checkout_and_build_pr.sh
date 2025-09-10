@@ -199,9 +199,6 @@ checkout_and_build_repo_branch "ssdc-rm-export-file-service" "$BRANCH_NAME" true
 # Support Tool
 checkout_and_build_repo_branch "ssdc-rm-support-tool" "$BRANCH_NAME" true
 
-# ROPS
-checkout_and_build_repo_branch "ssdc-rm-response-operations" "$BRANCH_NAME" true
-
 #Qid Service
 checkout_and_build_repo_branch "ssdc-rm-uac-qid-service" "$BRANCH_NAME" true
 
