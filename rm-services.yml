@@ -3,10 +3,7 @@ services:
   caseprocessor:
     container_name: caseprocessor
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-caseprocessor
-    external_links:
-      - postgres
-      - uacqid
-      - pubsub-emulator
+  # external_links removed; use service names for networking
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
@@ -40,8 +37,7 @@ services:
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-uac-qid-service
     ports:
       - "${UAC_PORT}:8164"
-    external_links:
-      - postgres
+  # external_links removed; use service names for networking
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
       - JAVA_TOOL_OPTIONS=-Xmx128m -Xdebug -Dspring.profiles.active=dev
@@ -95,8 +91,7 @@ services:
   exportfileservice:
     container_name: exportfileservice
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-export-file-service
-    external_links:
-      - pubsub-emulator
+  # external_links removed; use service names for networking
     environment:
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
@@ -136,9 +131,7 @@ services:
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-support-tool
     ports:
       - "9999:9999"
-    external_links:
-      - pubsub-emulator
-      - postgres
+  # external_links removed; use service names for networking
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
@@ -178,9 +171,7 @@ services:
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-service
     ports:
       - "${NOTIFY_SERVICE_PORT}:8162"
-    external_links:
-      - postgres
-      - pubsub-emulator
+  # external_links removed; use service names for networking
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=our-project
@@ -215,9 +206,7 @@ services:
   jobprocessor:
     container_name: jobprocessor
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-job-processor
-    external_links:
-      - pubsub-emulator
-      - postgres
+  # external_links removed; use service names for networking
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project

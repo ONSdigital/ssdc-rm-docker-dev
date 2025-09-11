@@ -19,12 +19,10 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     ports:
-      - "81:80"
+      - "1081:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=ons@ons.gov
       - PGADMIN_DEFAULT_PASSWORD=secret
-    links:
-      - ons-postgres:postgres
     deploy:
       resources:
         limits:
