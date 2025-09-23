@@ -117,14 +117,6 @@ services:
       - ./dummy_keys:/home/export-file-service/dummy_keys
       - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
       - ~/Documents/export_files:/home/export-file-service/export_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 500M
-        reservations:
-          cpus: '0.2'
-          memory: 500M
 
   supporttool:
     container_name: supporttool
@@ -157,14 +149,6 @@ services:
       - ./java_healthcheck:/opt/healthcheck/
       - ./dummy_destination_config.json:/home/supporttool/dummy_destination_config.json
       - ./dummy-notify-config.json:/home/supporttool/dummy-notify-config.json
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 400M
-        reservations:
-          cpus: '0.3'
-          memory: 400M
 
   notifyservice:
     container_name: notifyservice
@@ -194,14 +178,6 @@ services:
       timeout: 10s
       retries: 4
       start_period: 50s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 400M
-        reservations:
-          cpus: '0.5'
-          memory: 400M
 
   jobprocessor:
     container_name: jobprocessor
@@ -220,14 +196,6 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 400M
-        reservations:
-          cpus: '0.5'
-          memory: 400M
 
   rh-service:
     container_name: rh-service
@@ -259,14 +227,7 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 400M
-        reservations:
-          cpus: '0.2'
-          memory: 400M
+
   rh-ui:
     container_name: rh-ui
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui:latest
@@ -282,14 +243,6 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   support-api:
     container_name: support-api
@@ -316,14 +269,6 @@ services:
       start_period: 5s
     volumes:
       - ./dummy_sample_files:/home/support-api/sample_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   support-frontend:
     container_name: support-frontend
@@ -341,14 +286,6 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   autoprocessor:
     container_name: autoprocessor
@@ -372,14 +309,6 @@ services:
       start_period: 50s
     volumes:
       - ./dummy_sample_files:/home/autoprocessor/sample_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 500M
-        reservations:
-          cpus: '0.2'
-          memory: 500M
 
 networks:
   default:
