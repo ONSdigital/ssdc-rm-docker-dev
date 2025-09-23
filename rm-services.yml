@@ -22,14 +22,6 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 500M
-        reservations:
-          cpus: '0.5'
-          memory: 500M
 
 
   uacqid:
@@ -52,14 +44,6 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 400M
-        reservations:
-          cpus: '0.3'
-          memory: 400M
 
   exceptionmanager:
     container_name: exceptionmanager
@@ -79,14 +63,6 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 400M
-        reservations:
-          cpus: '0.2'
-          memory: 400M
 
   exportfileservice:
     container_name: exportfileservice
