@@ -6,14 +6,6 @@ services:
     command: [ "-c", "shared_buffers=256MB", "-c", "max_connections=500" ]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1000M
-        reservations:
-          cpus: '0.5'
-          memory: 1000M
 
   pgadmin:
     container_name: pgadmin
