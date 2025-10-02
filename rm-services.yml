@@ -214,7 +214,7 @@ services:
     ports:
       - "${RH_UI_PORT}:9092"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9092/info\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -238,7 +238,7 @@ services:
     ports:
       - "${SUPPORT_API_PORT}:9095"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9095/info/')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9095/info/\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -257,7 +257,7 @@ services:
     ports:
       - "${SUPPORT_FRONTEND_PORT}:9096"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9096/info/')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9096/info/\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
