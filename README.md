@@ -1,7 +1,9 @@
 # Stand up a local SSDC RM App Environment
 
 The goal of this repository is to enable team members to stand up a dockerized local RM and RH application
-using **docker compose** and **docker network**.
+using either **podman compose** and **podman network** or **docker compose** and **docker network**.
+
+The use of Podman and Docker are both supported.
 
 ## Table of contents
 
@@ -25,6 +27,24 @@ using **docker compose** and **docker network**.
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
 
 Important is to configure your python environment - that's covered next.
+
+> [!NOTE]
+> Alot of the commands in this readme use podman, if you want to use docker instead just replace `podman` with `docker`.
+> 
+> By default, the Makefile will use `docker` unless you are on an `arm64` architecture (e.g. M1/M2 Mac) in which case it will use `podman`.
+> You can override this by setting the `DOCKER` environment variable to either `docker` or `podman`.
+> For example, to force using `docker` on an M1/M2 Mac:
+> ```shell
+> DOCKER=docker make <command>
+> ```
+
+### Podman Recourses
+
+The services are very resource intensive, it's recommended you allocate at least 14gb of RAM to podman machine:
+```shell
+podman machine set --memory 14000
+```
+
 
 ### Docker Resources
 
@@ -111,7 +131,7 @@ There are two docker-compose files:
 These can be run together as per the Quickstart section or individually.
 
 ```shell
-docker compose -f rm-dependencies.yml -f rm-services.yml up -d
+podman compose -f rm-dependencies.yml -f rm-services.yml up -d
 ```
 
 This will spin up the development containers and the rm-services.
@@ -119,7 +139,7 @@ This will spin up the development containers and the rm-services.
 Additionally, individual services can be specified at the end of the command. For example:
 
 ```shell
-docker compose -f rm-services.yml up -d caseprocessor
+podman compose -f rm-services.yml up -d caseprocessor
 ```
 
 This will spin up just the Case Processor container, however be aware that individual services may not function
@@ -143,7 +163,7 @@ Development using this repo can be done by doing the following:
 ### Running natively with local changes
 
 1. Ensure you have all your services running with `make up`
-1. Stop the service you're changing with `docker stop <service>`, e.g. `docker stop caseprocessor`
+1. Stop the service you're changing with `podman stop <service>`, e.g. `podman stop caseprocessor`
 1. Make changes to whichever repository.
 1. Depending on the repository, run it from either the command line using the appropriate command (e.g. for a python
    flask app: `flask run`) or by pressing run in your IDE.
@@ -151,7 +171,7 @@ Development using this repo can be done by doing the following:
 ### pgAdmin 4
 
 1. Start all the services `make up`
-2. Navigate to `localhost:81` in your browser
+2. Navigate to `localhost:1081` in your browser
 3. Login with `ons@ons.gov` / `secret`
 4. Object -> Register -> Server...
 5. Give it a suitable name in the `General` tab
@@ -168,9 +188,16 @@ Development using this repo can be done by doing the following:
 7. Click save to close the dialog and connect to the postgres docker container
 
 ## Troubleshooting
+These troubleshooting steps were created from common issues from docker, you may encounter simular issues with podman.
 
 ### Not logged in
 
+```shell
+error getting credentials - err: exit status 1, out: ``
+Error: executing /usr/local/bin/docker-compose -f rm-dependencies.yml -f rm-services.yml pull: exit status 1
+make: *** [pull] Error 1
+```
+or:
 ```shell
 Pulling iac (sdcplatform/iacsvc:latest)...
 ERROR: pull access denied for sdcplatform/iacsvc, repository does not exist or may require 'docker login'
