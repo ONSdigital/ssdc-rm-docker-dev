@@ -34,11 +34,9 @@ Important is to configure your python environment - that's covered next.
 > By default, the Makefile will use `docker` unless you are on an `arm64` architecture (e.g. M1/M2 Mac) in which case it will use `podman`.
 > You can override this by setting the `DOCKER` environment variable to either `docker` or `podman`.
 > For example, to force using `docker` on an M1/M2 Mac:
-> ```shell
-> DOCKER=docker make <command>
-> ```
+> `DOCKER=docker make <command>`
 
-### Podman Recourses
+### Podman Resources
 
 The services are very resource intensive, it's recommended you allocate at least 14gb of RAM to podman machine:
 ```shell
