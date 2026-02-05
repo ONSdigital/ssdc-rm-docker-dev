@@ -6,75 +6,33 @@ services:
     command: [ "-c", "shared_buffers=256MB", "-c", "max_connections=500" ]
     ports:
       - "${EX_POSTGRES_PORT}:5432"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 1000M
-        reservations:
-          cpus: '0.5'
-          memory: 1000M
 
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
     ports:
-      - "81:80"
+      - "1081:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=ons@ons.gov
       - PGADMIN_DEFAULT_PASSWORD=secret
-    links:
-      - ons-postgres:postgres
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   pubsub-emulator:
     container_name: pubsub-emulator
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-pubsub-emulator:latest
     ports:
       - "8538:8538"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 500M
-        reservations:
-          cpus: '0.3'
-          memory: 500M
 
   notifystub:
     container_name: notifystub
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-stub:latest
     ports:
       - "8917:5000"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 200M
-        reservations:
-          cpus: '0.2'
-          memory: 200M
 
   firestore-emulator:
     container_name: firestore-emulator
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/gcloud-firestore-emulator:latest
     ports:
       - "8542:8540"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 400M
-        reservations:
-          cpus: '0.2'
-          memory: 400M
 
   sdx-receipt-adapter:
     container_name: sdx-receipt-adapter
@@ -91,14 +49,6 @@ services:
       - type: bind
         source: ./fake-service-account.json # The pubsub client used by the sdx receipt adapter requires google credentials, give it a dummy account locally
         target: /gcp/config/google-credentials.json
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 100M
-        reservations:
-          cpus: '0.2'
-          memory: 100M
 
 networks:
   ssdcrmdockerdev_default:

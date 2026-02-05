@@ -1,7 +1,17 @@
 # Stand up a local SSDC RM App Environment
 
 The goal of this repository is to enable team members to stand up a dockerized local RM and RH application
-using **docker compose** and **docker network**.
+using either **podman compose** and **podman network** or **docker compose** and **docker network**.
+
+The use of Podman and Docker are both supported.
+
+> [!NOTE]
+> Alot of the commands in this readme use podman, if you want to use docker instead just replace `podman` with `docker`.
+> 
+> By default, the Makefile will use `docker` unless you are on an `arm64` architecture (e.g. M1/M2 Mac) in which case it will use `podman`.
+> You can override this by setting the `DOCKER` environment variable to either `docker` or `podman`.
+> For example, to force using `docker` on an M1/M2 Mac:
+> `DOCKER=docker make <command>`
 
 ## Table of contents
 
@@ -21,10 +31,18 @@ using **docker compose** and **docker network**.
 1. Ask to become a team member of sdcplatform
 1. Run `gcloud auth login --update-adc` to login to your gcloud account
 1. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev` to associate your docker with the GCR registry
-1. Run `docker network create ssdcrmdockerdev_default` to create the docker network
+1. Run `podman network create ssdcrmdockerdev_default` to create the docker network
 1. Connect to the gcr registry and perform a `make pull` do bring down docker-compose images
 
 Important is to configure your python environment - that's covered next.
+
+### Podman Resources
+
+The services are very resource intensive, it's recommended you allocate at least 14gb of RAM to podman machine:
+```shell
+podman machine set --memory 14000
+```
+
 
 ### Docker Resources
 
@@ -111,7 +129,7 @@ There are two docker-compose files:
 These can be run together as per the Quickstart section or individually.
 
 ```shell
-docker compose -f rm-dependencies.yml -f rm-services.yml up -d
+podman compose -f rm-dependencies.yml -f rm-services.yml up -d
 ```
 
 This will spin up the development containers and the rm-services.
@@ -119,7 +137,7 @@ This will spin up the development containers and the rm-services.
 Additionally, individual services can be specified at the end of the command. For example:
 
 ```shell
-docker compose -f rm-services.yml up -d caseprocessor
+podman compose -f rm-services.yml up -d caseprocessor
 ```
 
 This will spin up just the Case Processor container, however be aware that individual services may not function
@@ -143,7 +161,7 @@ Development using this repo can be done by doing the following:
 ### Running natively with local changes
 
 1. Ensure you have all your services running with `make up`
-1. Stop the service you're changing with `docker stop <service>`, e.g. `docker stop caseprocessor`
+1. Stop the service you're changing with `podman stop <service>`, e.g. `podman stop caseprocessor`
 1. Make changes to whichever repository.
 1. Depending on the repository, run it from either the command line using the appropriate command (e.g. for a python
    flask app: `flask run`) or by pressing run in your IDE.
@@ -151,7 +169,7 @@ Development using this repo can be done by doing the following:
 ### pgAdmin 4
 
 1. Start all the services `make up`
-2. Navigate to `localhost:81` in your browser
+2. Navigate to `localhost:1081` in your browser
 3. Login with `ons@ons.gov` / `secret`
 4. Object -> Register -> Server...
 5. Give it a suitable name in the `General` tab
@@ -168,9 +186,16 @@ Development using this repo can be done by doing the following:
 7. Click save to close the dialog and connect to the postgres docker container
 
 ## Troubleshooting
+These troubleshooting steps were created from common issues from docker, you may encounter simular issues with podman.
 
 ### Not logged in
 
+```shell
+error getting credentials - err: exit status 1, out: ``
+Error: executing /usr/local/bin/docker-compose -f rm-dependencies.yml -f rm-services.yml pull: exit status 1
+make: *** [pull] Error 1
+```
+or:
 ```shell
 Pulling iac (sdcplatform/iacsvc:latest)...
 ERROR: pull access denied for sdcplatform/iacsvc, repository does not exist or may require 'docker login'
@@ -188,7 +213,7 @@ ERROR: Network ssdcrmdockerdev_default declared as external, but could not be fo
 make: *** [up] Error 1
 ```
 
-- Run `docker network create ssdcrmdockerdev_default` to create the docker network.
+- Run `podman network create ssdcrmdockerdev_default` to create the docker network.
 
 **NB:** Docker compose may warn you that the network is unused. This is a lie, it is in use.
 
@@ -196,9 +221,25 @@ make: *** [up] Error 1
 
 Some services aren't resilient to the database not being up before the service has started. Rerun `make up`
 
-### Services running sluggishly?
+### Services running sluggishly or crashing on start up?
 
-When rm is all running it takes a lot of memory. You can edit this in docker desktop by click on the docker icon in the top bar of your Mac, then click on '
+When rm is all running it takes a lot of memory. 
+
+#### Podman
+You can edit this in podman desktop by clicking on Settings (the gear icon) in the bottom left, then go to 'Resources',
+click the edit button in the Podman Machine section and increase the memory and cpu allocation. 
+What seems to work for most people is setting the memory to 14gb. 
+
+This can also be done via the command line by stopping the podman machine and restarting it with more resources:
+
+```shell
+podman machine stop
+podman machine set --memory 14000
+podman machine start
+```
+
+#### Docker
+You can edit this in docker desktop by click on the docker icon in the top bar of your Mac, then click on '
 preferences', then go to the 'advanced' tab. The default memory allocated to Docker is 2gb. Bumping that up to 8gb and
 the number of cores to 5 should make the service run much smoother. Note: These aren't hard and fast numbers, this is
 just what worked for people.
@@ -207,7 +248,7 @@ Or if you use colima you can simply run the command `colima start --cpu 6 --memo
 
 ### Containers not updating or failing to write to disk?
 
-#### Or Docker using too much disk space in general?
+#### Or Podman using too much disk space in general?
 
 Over time, images and volumes can accumulate and consume too much disk storage space. If this reaches Docker's storage
 limit then it will cause failures when running our services, as containers will be denied disk writes, as well as
@@ -218,7 +259,7 @@ up with the `prune` tool.
 To automatically clean up containers, images, and volumes try running
 
 ```shell
-docker system prune --volumes
+podman system prune --volumes
 ```
 
 ### Database already running
@@ -254,8 +295,8 @@ run `make rebuild-java-healthcheck` to compile and package the updated class int
 ### Unexpected behavior
 
 1. Stop docker containers `make down`
-1. Remove containers `docker rm $(docker ps -aq)`
-1. Delete images `docker rmi $(docker images europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/* -qa)`
+1. Remove containers `podman rm $(docker ps -aq)`
+1. Delete images `podman rmi $(docker images europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/* -qa)`
 1. Pull and run containers `make up`
 
 ## Pubsub Tools

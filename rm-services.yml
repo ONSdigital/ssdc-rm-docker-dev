@@ -3,10 +3,6 @@ services:
   caseprocessor:
     container_name: caseprocessor
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-caseprocessor
-    external_links:
-      - postgres
-      - uacqid
-      - pubsub-emulator
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
@@ -25,14 +21,6 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 500M
-        reservations:
-          cpus: '0.5'
-          memory: 500M
 
 
   uacqid:
@@ -40,8 +28,6 @@ services:
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-uac-qid-service
     ports:
       - "${UAC_PORT}:8164"
-    external_links:
-      - postgres
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable
       - JAVA_TOOL_OPTIONS=-Xmx128m -Xdebug -Dspring.profiles.active=dev
@@ -56,14 +42,6 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 400M
-        reservations:
-          cpus: '0.3'
-          memory: 400M
 
   exceptionmanager:
     container_name: exceptionmanager
@@ -83,20 +61,10 @@ services:
       timeout: 10s
       retries: 4
       start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 400M
-        reservations:
-          cpus: '0.2'
-          memory: 400M
 
   exportfileservice:
     container_name: exportfileservice
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-export-file-service
-    external_links:
-      - pubsub-emulator
     environment:
       - READINESS_FILE_PATH=/tmp/ready
       - ENVIRONMENT=DEV
@@ -122,23 +90,12 @@ services:
       - ./dummy_keys:/home/export-file-service/dummy_keys
       - ./dummy_destination_config.json:/home/export-file-service/dummy_destination_config.json
       - ~/Documents/export_files:/home/export-file-service/export_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 500M
-        reservations:
-          cpus: '0.2'
-          memory: 500M
 
   supporttool:
     container_name: supporttool
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-support-tool
     ports:
       - "9999:9999"
-    external_links:
-      - pubsub-emulator
-      - postgres
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
@@ -164,23 +121,12 @@ services:
       - ./java_healthcheck:/opt/healthcheck/
       - ./dummy_destination_config.json:/home/supporttool/dummy_destination_config.json
       - ./dummy-notify-config.json:/home/supporttool/dummy-notify-config.json
-    deploy:
-      resources:
-        limits:
-          cpus: '0.3'
-          memory: 400M
-        reservations:
-          cpus: '0.3'
-          memory: 400M
 
   notifyservice:
     container_name: notifyservice
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-notify-service
     ports:
       - "${NOTIFY_SERVICE_PORT}:8162"
-    external_links:
-      - postgres
-      - pubsub-emulator
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT_ID=our-project
@@ -203,21 +149,10 @@ services:
       timeout: 10s
       retries: 4
       start_period: 50s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 400M
-        reservations:
-          cpus: '0.5'
-          memory: 400M
 
   jobprocessor:
     container_name: jobprocessor
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/ssdc-rm-job-processor
-    external_links:
-      - pubsub-emulator
-      - postgres
     environment:
       - SPRING_CLOUD_GCP_PUBSUB_EMULATOR_HOST=pubsub-emulator:8538
       - SPRING_CLOUD_GCP_PUBSUB_PROJECT-ID=our-project
@@ -231,14 +166,6 @@ services:
       timeout: 10s
       retries: 10
       start_period: 45s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 400M
-        reservations:
-          cpus: '0.5'
-          memory: 400M
 
   rh-service:
     container_name: rh-service
@@ -270,14 +197,7 @@ services:
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 400M
-        reservations:
-          cpus: '0.2'
-          memory: 400M
+
   rh-ui:
     container_name: rh-ui
     image: europe-west2-docker.pkg.dev/ssdc-rm-ci/docker/srm-rh-ui:latest
@@ -288,19 +208,11 @@ services:
     ports:
       - "${RH_UI_PORT}:9092"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9092/info')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9092/info\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   support-api:
     container_name: support-api
@@ -320,21 +232,13 @@ services:
     ports:
       - "${SUPPORT_API_PORT}:9095"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9095/info/')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9095/info/\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 5s
     volumes:
       - ./dummy_sample_files:/home/support-api/sample_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   support-frontend:
     container_name: support-frontend
@@ -347,19 +251,11 @@ services:
     ports:
       - "${SUPPORT_FRONTEND_PORT}:9096"
     healthcheck:
-      test: [ "CMD", "python", "-c", "import urllib.request as r; r.urlopen('http://localhost:9096/info/')" ]
+      test: [ "CMD-SHELL", "python", "-c", "'import urllib.request as r; r.urlopen(\"http://localhost:9096/info/\")'" ]
       interval: 5s
       timeout: 3s
       retries: 20
       start_period: 5s
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 250M
-        reservations:
-          cpus: '0.2'
-          memory: 250M
 
   autoprocessor:
     container_name: autoprocessor
@@ -383,14 +279,6 @@ services:
       start_period: 50s
     volumes:
       - ./dummy_sample_files:/home/autoprocessor/sample_files
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 500M
-        reservations:
-          cpus: '0.2'
-          memory: 500M
 
 networks:
   default:
