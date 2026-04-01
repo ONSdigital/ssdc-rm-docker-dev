@@ -36,6 +36,14 @@ megalint-fix:  ## Run the mega-linter and attempt to auto fix any issues.
 		-e APPLY_FIXES=all \
 		oxsecurity/megalinter:v8
 
+psql:  ## Get access to the database console
+	$(DOCKER) compose -f rm-dependencies.yml exec -t ons-postgres \
+		psql "dbname=rm user=appuser options=-csearch_path=casev3,exceptionmanager,uacqid,public"
+
+populate-test-data:  ## Populate DB with test data for performance testing.
+	time $(DOCKER) compose -f rm-dependencies.yml exec -T ons-postgres \
+		psql -U appuser -d rm -v ON_ERROR_STOP=1 -f /dev/stdin < populate_test_data.sql
+
 clean_megalint: ## Clean the temporary files.
 	rm -rf megalinter-reports
 
