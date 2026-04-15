@@ -61,7 +61,10 @@ SELECT
         {"columnName": "LAST_NAME",            "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
         {"columnName": "FIRST_NAME",           "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
         {"columnName": "COHORT",               "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
-        {"columnName": "PREVIOUS_COMPLETION",  "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]}
+        {"columnName": "PREVIOUS_COMPLETION",  "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
+        {"columnName": "ADDRESS_LINE1",        "sensitive": true, "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
+        {"columnName": "POSTCODE",             "sensitive": true, "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]},
+        {"columnName": "PHONE_NUMBER",         "sensitive": true, "rules": [{"className": "uk.gov.ons.ssdc.common.validation.MandatoryRule"}]}
     ]'::jsonb,
     true,
     'https://example.com/sample-definition',
