@@ -1,7 +1,8 @@
 -- =============================================================================
 -- Populate test data for performance benchmarking
 -- N surveys (default 100), each with 3 collection exercises (40k, 40k, 150k cases)
--- Each case has 2 QID links and 6 events (1 NEW_CASE + 5 random)
+-- Each case has 2 QID links, 6 events (1 NEW_CASE + 5 random)
+-- Each collex has 90 entries in each of MI tables
 -- At 100 surveys: 300 collex, 23M cases, 46M QID links, 138M events
 -- Change num_surveys below to scale up or down.
 --
@@ -265,3 +266,98 @@ ALTER TABLE casev3.uac_qid_link ADD CONSTRAINT FKngo7bm72f0focdujjma78t4nk FOREI
 ANALYZE casev3.cases;
 ANALYZE casev3.event;
 ANALYZE casev3.uac_qid_link;
+
+-- =============================================================================
+-- Populate MI snapshot tables
+-- One row per (collection_exercise, day) for each of the 90 days.
+-- Email and export file requests use two pack codes per collex.
+-- =============================================================================
+
+-- mi_response_rate: one snapshot per collex per day, strictly growing
+-- Daily increments are randomised per day; first_value sets a per-collex base rate
+-- so different collexes end up at different total response rates.
+-- Cumulative SUM ensures receipted/launched only ever increase.
+INSERT INTO casev3.mi_response_rate (
+    collection_exercise_id, snapshot_date, receipted_count, launched_count, total_case_count, created_at
+)
+SELECT
+    id,
+    snapshot_date,
+    LEAST(SUM(daily_receipted) OVER (PARTITION BY id ORDER BY snapshot_date), total)::int,
+    LEAST(SUM(daily_launched)  OVER (PARTITION BY id ORDER BY snapshot_date), total)::int,
+    total,
+    NOW()
+FROM (
+    SELECT
+        ce.id,
+        ('2026-01-01'::date + d - 1) AS snapshot_date,
+        CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END AS total,
+        -- per-collex base rate (0.3–0.7 of total spread over 90 days) * per-day jitter
+        FLOOR(
+            (CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END)
+            * (0.3 + 0.4 * first_value(random()) OVER (PARTITION BY ce.id ORDER BY d))
+            / 90.0
+            * (0.5 + random())
+        )::int AS daily_receipted,
+        FLOOR(
+            (CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END)
+            * (0.4 + 0.4 * first_value(random()) OVER (PARTITION BY ce.id ORDER BY d))
+            / 90.0
+            * (0.5 + random())
+        )::int AS daily_launched
+    FROM casev3.collection_exercise ce
+    CROSS JOIN generate_series(1, 90) AS d
+    WHERE ce.name LIKE 'HMS %'
+) sub;
+
+-- mi_email_request: two pack codes per collex per day
+-- Per-(collex, pack_code) scale factor gives each combination a distinct volume.
+INSERT INTO casev3.mi_email_request (
+    collection_exercise_id, pack_code, snapshot_date, daily_email_requests, total_email_requests, created_at
+)
+SELECT
+    id,
+    pack_code,
+    snapshot_date,
+    daily,
+    SUM(daily) OVER (PARTITION BY id, pack_code ORDER BY snapshot_date) AS total_email_requests,
+    NOW()
+FROM (
+    SELECT
+        ce.id,
+        pc.pack_code,
+        ('2026-01-01'::date + d - 1) AS snapshot_date,
+        FLOOR((30 + 170 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY d)) * (0.8 + 0.4 * random()))::int AS daily
+    FROM casev3.collection_exercise ce
+    CROSS JOIN generate_series(1, 90) AS d
+    CROSS JOIN (VALUES ('PACK_EMAIL_A'), ('PACK_EMAIL_B')) AS pc(pack_code)
+    WHERE ce.name LIKE 'HMS %'
+) sub;
+
+-- mi_export_file_request: two pack codes per collex per day
+-- Same pattern as email requests.
+INSERT INTO casev3.mi_export_file_request (
+    collection_exercise_id, pack_code, snapshot_date, daily_export_file_requests, total_export_file_requests, created_at
+)
+SELECT
+    id,
+    pack_code,
+    snapshot_date,
+    daily,
+    SUM(daily) OVER (PARTITION BY id, pack_code ORDER BY snapshot_date) AS total_export_file_requests,
+    NOW()
+FROM (
+    SELECT
+        ce.id,
+        pc.pack_code,
+        ('2026-01-01'::date + d - 1) AS snapshot_date,
+        FLOOR((20 + 130 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY d)) * (0.8 + 0.4 * random()))::int AS daily
+    FROM casev3.collection_exercise ce
+    CROSS JOIN generate_series(1, 90) AS d
+    CROSS JOIN (VALUES ('PACK_EXPORT_A'), ('PACK_EXPORT_B')) AS pc(pack_code)
+    WHERE ce.name LIKE 'HMS %'
+) sub;
+
+ANALYZE casev3.mi_response_rate;
+ANALYZE casev3.mi_email_request;
+ANALYZE casev3.mi_export_file_request;
