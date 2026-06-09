@@ -1,9 +1,11 @@
 -- =============================================================================
 -- Populate test data for performance benchmarking
--- N surveys (default 100), each with 3 collection exercises (40k, 40k, 150k cases)
+-- Modelled after the real HMS survey: N surveys (default 1), each with 50 waves
+-- of 50k cases. Waves are 11 days long, fortnightly, starting Mon or Tue.
+-- 40 waves completed, 1 in-progress, 9 future.
 -- Each case has 2 QID links, 6 events (1 NEW_CASE + 5 random)
--- Each collex has 90 entries in each of MI tables
--- At 100 surveys: 300 collex, 23M cases, 46M QID links, 138M events
+-- Each started collex has 11 entries in each MI table (production-shaped curve)
+-- At 1 survey: 50 collex, 2.5M cases, 5M QID links, 15M events
 -- Change num_surveys below to scale up or down.
 --
 -- WARNING: This populates only a few tables. If the query you want to test uses different
@@ -13,12 +15,12 @@
 -- Run against local docker-dev postgres:
 --   make populate-test-data
 --
--- WARNING: This will take ~90 GB disk space and ~3 hours (on the 2020 Macbook).
---          Decrease the number of surveys for a quick speed gain (it's more or less linear).
+-- WARNING: At 1 survey this takes ~10 GB disk space and ~20 minutes.
+--          Scale is roughly linear with num_surveys.
 -- =============================================================================
 
 -- Configuration
-\set num_surveys 100
+\set num_surveys 1
 \timing on
 
 -- Check if the test data already exists
@@ -44,7 +46,10 @@ ALTER TABLE casev3.uac_qid_link DROP CONSTRAINT IF EXISTS FKngo7bm72f0focdujjma7
 ALTER TABLE casev3.cases DROP CONSTRAINT IF EXISTS FKrl77p02uu7a253tn2ro5mitv5;
 ALTER TABLE casev3.uac_qid_link DROP CONSTRAINT IF EXISTS uac_qid_link_qid_key;
 
--- Generate 100 surveys and 300 collection exercises
+-- Generate surveys and collection exercises
+-- 50 waves per survey, fortnightly (14 days apart), each 11 days long.
+-- Wave 41 is in-progress; waves 1-40 are completed; waves 42-50 are future.
+-- Each wave starts on Monday or Tuesday (randomised).
 BEGIN;
 
 INSERT INTO casev3.survey (
@@ -79,14 +84,23 @@ INSERT INTO casev3.collection_exercise (
 SELECT
     ('bbbbbbbb-bbbb-' || LPAD(s::text, 4, '0') || '-' || LPAD(w::text, 4, '0') || '-' || LPAD(s::text, 12, '0'))::uuid,
     ('aaaaaaaa-aaaa-aaaa-aaaa-' || LPAD(s::text, 12, '0'))::uuid,
-    'HMS ' || s || ' Wave ' || w || CASE w WHEN 1 THEN ' (40k)' WHEN 2 THEN ' (40k)' ELSE ' (150k)' END,
+    'HMS ' || s || ' Wave ' || w,
     'HMS' || s || '-W' || w,
-    '2026-01-01T00:00:00Z',
-    '2026-06-01T00:00:00Z',
+    wave_start::timestamptz,
+    (wave_start + 10)::timestamptz,
     '[]'::jsonb,
     '{}'::jsonb
-FROM generate_series(1, :num_surveys) AS s,
-     generate_series(1, 3) AS w;
+FROM generate_series(1, :num_surveys) AS s
+CROSS JOIN LATERAL (
+    SELECT
+        w,
+        -- Anchor wave 41 to the Monday of the current week, then offset by
+        -- 14 days per wave. Add 0 or 1 to land on Monday or Tuesday.
+        date_trunc('week', CURRENT_DATE - 5)::date
+            + (w - 41) * 14
+            + floor(random() * 2)::int AS wave_start
+    FROM generate_series(1, 50) AS w
+) waves;
 
 COMMIT;
 
@@ -224,24 +238,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Populate cases: 100 surveys x 3 waves each
--- Wave 1: 40k, Wave 2: 40k, Wave 3: 150k
+-- Populate cases: N surveys x 50 waves x 50k cases each
 CREATE OR REPLACE PROCEDURE pg_temp.populate_all_cases(p_num_surveys int) AS $$
 DECLARE
     s int;
+    w int;
     base_offset bigint;
 BEGIN
     FOR s IN 1..p_num_surveys LOOP
-        -- Each survey gets a block of 230,000 case_refs
-        base_offset := (s - 1)::bigint * 230000;
-
-        PERFORM pg_temp.populate_cases(s, 1,  40000,  base_offset);
-        PERFORM pg_temp.populate_cases(s, 2,  40000,  base_offset + 40000);
-        PERFORM pg_temp.populate_cases(s, 3, 150000,  base_offset + 80000);
-
-        -- Commit after each survey to avoid WAL slowing us down
-        COMMIT;
-        RAISE NOTICE 'Survey % complete (% of %)', s, s, p_num_surveys;
+        FOR w IN 1..50 LOOP
+            base_offset := ((s - 1)::bigint * 50 + (w - 1)::bigint) * 50000;
+            PERFORM pg_temp.populate_cases(s, w, 50000, base_offset);
+            COMMIT;
+            RAISE NOTICE 'Survey %, Wave % complete', s, w;
+        END LOOP;
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
@@ -269,46 +279,54 @@ ANALYZE casev3.uac_qid_link;
 
 -- =============================================================================
 -- Populate MI snapshot tables
--- One row per (collection_exercise, day) for each of the 90 days.
+-- Curve is made too look similar to past HMS surveys.
+-- All 11 snapshots are generated for every collex (including in-progress wave 3)
+-- so there is no need to run the MI exporter locally.
+-- NOTE: MI snapshots are random and do not reflect actual case state.
 -- Email and export file requests use two pack codes per collex.
 -- =============================================================================
 
--- mi_response_rate: one snapshot per collex per day, strictly growing
--- Daily increments are randomised per day; first_value sets a per-collex base rate
--- so different collexes end up at different total response rates.
--- Cumulative SUM ensures receipted/launched only ever increase.
+-- Cumulative fractions derived from 24 waves of production HMS data.
+-- Each value is the fraction of total cases receipted/launched by that day offset.
+CREATE TEMPORARY TABLE hms_cumulative_curve (
+    day_offset   int PRIMARY KEY,
+    receipted_frac numeric(6,4) NOT NULL,
+    launched_frac  numeric(6,4) NOT NULL
+);
+INSERT INTO hms_cumulative_curve VALUES
+    (0,  0.0935, 0.0952),
+    (1,  0.1992, 0.2026),
+    (2,  0.3270, 0.3325),
+    (3,  0.4164, 0.4232),
+    (4,  0.4717, 0.4793),
+    (5,  0.5330, 0.5416),
+    (6,  0.5998, 0.6096),
+    (7,  0.6423, 0.6512),
+    (8,  0.6576, 0.6640),
+    (9,  0.6633, 0.6670),
+    (10, 0.6659, 0.6670);
+
+-- mi_response_rate: one snapshot per collex per day, production-shaped curve.
+-- All 11 snapshots are generated for every collex (including future waves) so
+-- there is no need to run the MI exporter locally.
+-- Per-collex scale factor (0.8-1.2) gives each collex a different total response rate.
+-- NOTE: MI snapshots are synthetic and do not reflect actual case/UAC state.
 INSERT INTO casev3.mi_response_rate (
     collection_exercise_id, snapshot_date, receipted_count, launched_count, total_case_count, created_at
 )
 SELECT
-    id,
-    snapshot_date,
-    LEAST(SUM(daily_receipted) OVER (PARTITION BY id ORDER BY snapshot_date), total)::int,
-    LEAST(SUM(daily_launched)  OVER (PARTITION BY id ORDER BY snapshot_date), total)::int,
-    total,
+    ce.id,
+    ce.start_date::date + c.day_offset,
+    FLOOR(50000 * c.receipted_frac * scale)::int,
+    FLOOR(50000 * c.launched_frac  * scale)::int,
+    50000,
     NOW()
 FROM (
-    SELECT
-        ce.id,
-        ('2026-01-01'::date + d - 1) AS snapshot_date,
-        CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END AS total,
-        -- per-collex base rate (0.3–0.7 of total spread over 90 days) * per-day jitter
-        FLOOR(
-            (CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END)
-            * (0.3 + 0.4 * first_value(random()) OVER (PARTITION BY ce.id ORDER BY d))
-            / 90.0
-            * (0.5 + random())
-        )::int AS daily_receipted,
-        FLOOR(
-            (CASE WHEN ce.name LIKE '%(150k)' THEN 150000 ELSE 40000 END)
-            * (0.4 + 0.4 * first_value(random()) OVER (PARTITION BY ce.id ORDER BY d))
-            / 90.0
-            * (0.5 + random())
-        )::int AS daily_launched
-    FROM casev3.collection_exercise ce
-    CROSS JOIN generate_series(1, 90) AS d
-    WHERE ce.name LIKE 'HMS %'
-) sub;
+    SELECT id, start_date, 0.8 + 0.4 * random() AS scale
+    FROM casev3.collection_exercise
+    WHERE name LIKE 'HMS %'
+) ce
+CROSS JOIN hms_cumulative_curve c;
 
 -- mi_email_request: two pack codes per collex per day
 -- Per-(collex, pack_code) scale factor gives each combination a distinct volume.
@@ -326,10 +344,10 @@ FROM (
     SELECT
         ce.id,
         pc.pack_code,
-        ('2026-01-01'::date + d - 1) AS snapshot_date,
-        FLOOR((30 + 170 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY d)) * (0.8 + 0.4 * random()))::int AS daily
+        ce.start_date::date + c.day_offset AS snapshot_date,
+        FLOOR((30 + 170 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY c.day_offset)) * (0.8 + 0.4 * random()))::int AS daily
     FROM casev3.collection_exercise ce
-    CROSS JOIN generate_series(1, 90) AS d
+    CROSS JOIN hms_cumulative_curve c
     CROSS JOIN (VALUES ('PACK_EMAIL_A'), ('PACK_EMAIL_B')) AS pc(pack_code)
     WHERE ce.name LIKE 'HMS %'
 ) sub;
@@ -350,14 +368,48 @@ FROM (
     SELECT
         ce.id,
         pc.pack_code,
-        ('2026-01-01'::date + d - 1) AS snapshot_date,
-        FLOOR((20 + 130 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY d)) * (0.8 + 0.4 * random()))::int AS daily
+        ce.start_date::date + c.day_offset AS snapshot_date,
+        FLOOR((20 + 130 * first_value(random()) OVER (PARTITION BY ce.id, pc.pack_code ORDER BY c.day_offset)) * (0.8 + 0.4 * random()))::int AS daily
     FROM casev3.collection_exercise ce
-    CROSS JOIN generate_series(1, 90) AS d
+    CROSS JOIN hms_cumulative_curve c
     CROSS JOIN (VALUES ('PACK_EXPORT_A'), ('PACK_EXPORT_B')) AS pc(pack_code)
     WHERE ce.name LIKE 'HMS %'
 ) sub;
 
+DROP TABLE hms_cumulative_curve;
+
+-- action_rule: 3 cohorts x 2 waves (Notification + Reminder) = 6 EMAIL rules per collex.
+-- Notification emails fire on days 0, 1, 2 (one cohort per day).
+-- Reminder emails fire on days 5, 6, 7.
+-- Completed waves are marked COMPLETED; in-progress and future are SCHEDULED.
+INSERT INTO casev3.action_rule (
+    id, action_rule_status, created_by, description,
+    email_column, has_triggered, trigger_date_time, type,
+    collection_exercise_id, email_template_pack_code
+)
+SELECT
+    gen_random_uuid(),
+    CASE WHEN ce.end_date < NOW() THEN 'COMPLETED' ELSE 'SCHEDULED' END,
+    'system',
+    'Cohort ' || cohort || ' ' || wave_type || ' Email - English',
+    'EMAIL',
+    ce.end_date < NOW(),
+    ce.start_date + (day_offset || ' days')::interval + interval '10 hours',
+    'EMAIL',
+    ce.id,
+    pack_code
+FROM casev3.collection_exercise ce
+CROSS JOIN (VALUES
+    (1, 0, 'Notification', 'MNE_EN_HMS'),
+    (2, 1, 'Notification', 'MNE_EN_HMS'),
+    (3, 2, 'Notification', 'MNE_EN_HMS'),
+    (1, 5, 'Reminder',     'MRE_EN_HMS'),
+    (2, 6, 'Reminder',     'MRE_EN_HMS'),
+    (3, 7, 'Reminder',     'MRE_EN_HMS')
+) AS ar(cohort, day_offset, wave_type, pack_code)
+WHERE ce.name LIKE 'HMS %';
+
 ANALYZE casev3.mi_response_rate;
 ANALYZE casev3.mi_email_request;
 ANALYZE casev3.mi_export_file_request;
+ANALYZE casev3.action_rule;
