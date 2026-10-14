@@ -185,6 +185,29 @@ Development using this repo can be done by doing the following:
 
 7. Click save to close the dialog and connect to the postgres docker container
 
+### DataGrip
+
+We recommend using DataGrip so you can easily explore the database. This can be installed via self service.
+
+To setup DataGrip to connect to the postgres database:
+1. In database explorer, click the + icon and select Data Source -> Postgres.
+ Set the following:
+
+   | <!-- -->            | <!-- -->          |
+   |---------------------|-------------------|
+   | Host name/ address: | `postgres`        |
+   | Port:               | `6432`            |
+   | Authentication:     | `User & Password` |
+   | Username:           | `appuser`         |
+   | Password:           | `postgres`        |
+
+   _Note: the port is different than the port for pgAdmin_
+3. Click test connection - it will then prompt you to download the postgres driver, click download and then test connection again.
+4. Go to the Schemas tab and enable `rm`
+5. Click apply and Ok
+6. Expand `postgrs@localhost` and `rm`. If there are no tables, click the number next to `rm` and check `All schemas`
+
+
 ## Troubleshooting
 These troubleshooting steps were created from common issues from docker, you may encounter simular issues with podman.
 
