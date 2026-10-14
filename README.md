@@ -191,13 +191,13 @@ We recommend using DataGrip so you can easily explore the database. This can be 
 
 To setup DataGrip to connect to the postgres database:
 1. In database explorer, click the + icon and select Data Source -> Postgres.
-2. Set the following:
+ Set the following:
 
    | <!-- -->            | <!-- -->          |
    |---------------------|-------------------|
    | Host name/ address: | `postgres`        |
    | Port:               | `6432`            |
- | | Authentication:     | `User & Password` |
+   | Authentication:     | `User & Password` |
    | Username:           | `appuser`         |
    | Password:           | `postgres`        |
 
